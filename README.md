@@ -5,7 +5,7 @@ HTML プレビューと PDF 出力を行うことができます。
 通常モードでは `FastAPI + SQLite + Next.js` で動作し、デモモードでは `Next.js` 単体で動作します。
 
 <p align="center">
-  <a href="https://resume-builder-kappa-sooty.vercel.app/" target="_blank" rel="noopener noreferrer">
+  <a href="https://resume-builder-kappa-sooty.vercel.app/preview" target="_blank" rel="noopener noreferrer">
     <img src="https://img.shields.io/badge/Live%20Demo-Open%20on%20Vercel-111827?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo on Vercel" />
   </a>
 </p>
