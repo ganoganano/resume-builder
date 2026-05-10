@@ -1,3 +1,5 @@
+import exampleData from "@/lib/example-data.json";
+
 const API_ROOT = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
 export const API_BASE_URL = API_ROOT ? `${API_ROOT}/api/v1` : "/api/v1";
 export const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
@@ -89,6 +91,8 @@ const defaultSettings: ResumeSettings = {
   section_order: ["self_pr", "employment", "skills", "certifications"],
 };
 
+const DEMO_EXAMPLE_BACKUP = normalizeBackup(exampleData);
+
 function createDefaultBackup(): ResumeBackup {
   return {
     version: 1,
@@ -149,14 +153,18 @@ function normalizeBackup(input: unknown): ResumeBackup {
   };
 }
 
+function serializeBackup(data: ResumeBackup): string {
+  return JSON.stringify(normalizeBackup(data));
+}
+
 function readDemoData(): ResumeBackup {
   if (!isBrowser()) return createDefaultBackup();
   const raw = window.localStorage.getItem(DEMO_STORAGE_KEY);
-  if (!raw) return createDefaultBackup();
+  if (!raw) return clone(DEMO_EXAMPLE_BACKUP);
   try {
     return normalizeBackup(JSON.parse(raw));
   } catch {
-    return createDefaultBackup();
+    return clone(DEMO_EXAMPLE_BACKUP);
   }
 }
 
@@ -506,4 +514,13 @@ export async function fetchResumeBackup(): Promise<ResumeBackup> {
   if (IS_DEMO_MODE) return clone(readDemoData());
   const blob = await exportBackup();
   return normalizeBackup(JSON.parse(await blob.text()));
+}
+
+export function isExampleResumeBackup(data: ResumeBackup): boolean {
+  return serializeBackup(data) === serializeBackup(DEMO_EXAMPLE_BACKUP);
+}
+
+export async function clearDemoData(): Promise<void> {
+  if (!IS_DEMO_MODE) return;
+  writeDemoData(createDefaultBackup());
 }

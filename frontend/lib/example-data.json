@@ -1,0 +1,282 @@
+{
+  "version": 1,
+  "profile": {
+    "id": 1,
+    "name": "山田 花子",
+    "as_of_date": "2026-05-01",
+    "self_pr": "Web アプリケーション開発と業務改善を中心に経験してきたバックエンド寄りのエンジニアです。\n\n要件整理から実装、運用改善まで一気通貫で関わることを得意としており、特に次のようなテーマに継続的に取り組んできました。\n\n## 業務改善の仕組み化\n手作業で行われていた定型業務をスクリプト化・自動化し、運用負荷の削減と品質の平準化を進めてきました。\n\n## レガシー環境の改善\n既存システムを理解しながら、テスト追加や構成整理を通じて段階的な改善を進めることができます。\n\n## チーム開発\n設計レビュー、コードレビュー、ドキュメント整備を通じて、チームで継続的に開発しやすい状態を作ることを重視しています。",
+    "pr_highlights": []
+  },
+  "settings": {
+    "id": 1,
+    "skills_on_new_page": false,
+    "certifications_on_new_page": false,
+    "section_order": [
+      "self_pr",
+      "employment",
+      "skills",
+      "certifications"
+    ]
+  },
+  "employments": [
+    {
+      "id": 1,
+      "sort_order": 0,
+      "company_name": "サンプルテック株式会社",
+      "start_date": "2018-04",
+      "end_date": "2021-06",
+      "note": "受託開発部門に所属"
+    },
+    {
+      "id": 2,
+      "sort_order": 1,
+      "company_name": "デモクラウド株式会社",
+      "start_date": "2021-07",
+      "end_date": null,
+      "note": "SaaS プロダクト開発チームに所属"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "employment_id": 1,
+      "sort_order": 0,
+      "start_date": "2018-07",
+      "end_date": "2019-09",
+      "title": "人事評価ワークフローシステム開発",
+      "overview": "社内向け人事評価ワークフローシステムの新規開発。申請・承認・差戻し・履歴参照などの基本機能を実装した。",
+      "role": "開発メンバー",
+      "team_size": "5名",
+      "phases": [
+        "詳細設計",
+        "実装",
+        "テスト"
+      ],
+      "tasks": "- 申請・承認画面の実装\n- REST API の実装\n- 単体テストの追加\n- リリース手順書の作成",
+      "achievements": "フォーム入力のバリデーション共通化を行い、画面ごとの実装差異を減らしました。\n\nまた、問い合わせが多かった差戻し理由の確認導線を改善し、ユーザー部門からのフィードバック件数を減らすことができました。",
+      "os": [
+        "Linux"
+      ],
+      "languages": [
+        "Java",
+        "TypeScript"
+      ],
+      "frameworks": [
+        "Spring Boot",
+        "React"
+      ],
+      "databases": [
+        "PostgreSQL"
+      ],
+      "others": [
+        "Docker",
+        "Nginx"
+      ]
+    },
+    {
+      "id": 2,
+      "employment_id": 1,
+      "sort_order": 1,
+      "start_date": "2020-01",
+      "end_date": "2021-05",
+      "title": "受発注管理システム保守改善",
+      "overview": "既存の受発注管理システムに対して、運用保守と段階的な改善を実施。パフォーマンス改善と障害調査対応を担当した。",
+      "role": "サブリーダー",
+      "team_size": "4名",
+      "phases": [
+        "調査",
+        "設計",
+        "実装",
+        "保守"
+      ],
+      "tasks": "日々の問い合わせ対応に加えて、定期的に発生していた帳票出力の遅延調査を行いました。\n\n- SQL の見直し\n- ログ出力の改善\n- バッチ処理のタイムアウト調整",
+      "achievements": "- 帳票出力処理のボトルネックを特定し、平均処理時間を短縮\n- 障害一次調査のためのログを整理し、原因切り分け時間を削減\n- 運用手順のドキュメントを更新し、属人化を緩和",
+      "os": [
+        "CentOS"
+      ],
+      "languages": [
+        "PHP"
+      ],
+      "frameworks": [
+        "Laravel"
+      ],
+      "databases": [
+        "MySQL"
+      ],
+      "others": [
+        "Apache",
+        "GitLab CI"
+      ]
+    },
+    {
+      "id": 3,
+      "employment_id": 2,
+      "sort_order": 0,
+      "start_date": "2021-08",
+      "end_date": "2023-03",
+      "title": "請求書作成 SaaS の新機能開発",
+      "overview": "中小企業向け請求書作成 SaaS における新機能開発。テンプレート機能、権限制御、通知機能の改善を担当した。",
+      "role": "バックエンドエンジニア",
+      "team_size": "6名",
+      "phases": [
+        "要件整理",
+        "基本設計",
+        "実装",
+        "テスト"
+      ],
+      "tasks": "## 実装領域\n- 請求書テンプレート API の設計・実装\n- 権限制御ロジックの追加\n- メール通知ジョブの改善\n\n## 付随対応\n- API 仕様書の更新\n- CS 部門向け説明資料の作成",
+      "achievements": "新機能のリリースに合わせて問い合わせフローも整理し、CS と連携しながら運用を整備しました。\n\n結果として初期導入時の問い合わせ増加を抑えつつ、継続利用率向上に寄与しました。",
+      "os": [
+        "Ubuntu"
+      ],
+      "languages": [
+        "Go",
+        "TypeScript"
+      ],
+      "frameworks": [
+        "Echo",
+        "Next.js"
+      ],
+      "databases": [
+        "MySQL",
+        "Redis"
+      ],
+      "others": [
+        "AWS",
+        "Terraform"
+      ]
+    },
+    {
+      "id": 4,
+      "employment_id": 2,
+      "sort_order": 1,
+      "start_date": "2023-04",
+      "end_date": null,
+      "title": "運用自動化基盤の整備",
+      "overview": "運用チームが日常的に実施していた確認作業や定型メンテナンスを自動化するための基盤整備。",
+      "role": "主担当",
+      "team_size": "3名",
+      "phases": [
+        "課題整理",
+        "設計",
+        "実装",
+        "運用"
+      ],
+      "tasks": "問い合わせや定期作業を棚卸しし、自動化対象を選定しました。\n\n- スクリプトの実装\n- ジョブ実行基盤の整備\n- アラート通知の追加\n- 手順書の更新",
+      "achievements": "- 定期作業の手動実施回数を削減\n- 作業結果の記録を標準化\n- 新規メンバーがキャッチアップしやすい運用フローへ改善",
+      "os": [
+        "Amazon Linux"
+      ],
+      "languages": [
+        "Python"
+      ],
+      "frameworks": [
+        "FastAPI"
+      ],
+      "databases": [
+        "PostgreSQL"
+      ],
+      "others": [
+        "AWS ECS",
+        "Datadog",
+        "GitHub Actions"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": 1,
+      "category": "言語",
+      "sort_order": 0,
+      "name": "Java",
+      "experience": "3年",
+      "description": "業務システムの API 実装、保守改善ができる"
+    },
+    {
+      "id": 2,
+      "category": "言語",
+      "sort_order": 1,
+      "name": "TypeScript",
+      "experience": "4年",
+      "description": "フロントエンドと BFF の実装ができる"
+    },
+    {
+      "id": 3,
+      "category": "言語",
+      "sort_order": 2,
+      "name": "Python",
+      "experience": "3年",
+      "description": "業務自動化スクリプトや API 実装ができる"
+    },
+    {
+      "id": 4,
+      "category": "フレームワーク",
+      "sort_order": 0,
+      "name": "Spring Boot",
+      "experience": "2年",
+      "description": "REST API やバッチの実装経験あり"
+    },
+    {
+      "id": 5,
+      "category": "フレームワーク",
+      "sort_order": 1,
+      "name": "Next.js",
+      "experience": "2年",
+      "description": "管理画面や社内ツールの開発経験あり"
+    },
+    {
+      "id": 6,
+      "category": "DB",
+      "sort_order": 0,
+      "name": "PostgreSQL",
+      "experience": "4年",
+      "description": "基本設計、SQL 作成、性能改善ができる"
+    },
+    {
+      "id": 7,
+      "category": "DB",
+      "sort_order": 1,
+      "name": "MySQL",
+      "experience": "5年",
+      "description": "運用保守とクエリ改善の経験あり"
+    },
+    {
+      "id": 8,
+      "category": "クラウド",
+      "sort_order": 0,
+      "name": "AWS",
+      "experience": "3年",
+      "description": "ECS、RDS、S3、CloudWatch などの利用経験あり"
+    },
+    {
+      "id": 9,
+      "category": "ツール",
+      "sort_order": 0,
+      "name": "Docker",
+      "experience": "4年",
+      "description": "ローカル開発環境の構築、簡単な運用ができる"
+    },
+    {
+      "id": 10,
+      "category": "ツール",
+      "sort_order": 1,
+      "name": "Datadog",
+      "experience": "1年",
+      "description": "監視ダッシュボード整備とアラート設計の経験あり"
+    }
+  ],
+  "certifications": [
+    {
+      "id": 1,
+      "sort_order": 0,
+      "date": "2019-10",
+      "name": "基本情報技術者試験"
+    },
+    {
+      "id": 2,
+      "sort_order": 1,
+      "date": "2022-06",
+      "name": "AWS Certified Solutions Architect - Associate"
+    }
+  ]
+}
