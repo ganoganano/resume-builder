@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { API_BASE_URL, fetchResumeBackup, IS_DEMO_MODE } from "@/lib/api";
 import { buildResumePreviewHtml } from "@/lib/resume-preview";
 
@@ -8,6 +8,8 @@ export default function PreviewPage() {
   const [html, setHtml] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [printing, setPrinting] = useState(false);
+  const previewFrameRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -29,51 +31,45 @@ export default function PreviewPage() {
     void load();
   }, []);
 
-  const handlePdf = () => {
+  const handlePdf = async () => {
     if (!IS_DEMO_MODE) {
       window.open(`${API_BASE_URL}/export/pdf`, "_blank");
       return;
     }
 
-    const previewWindow = window.open("", "_blank", "noopener,noreferrer");
-    if (!previewWindow) return;
+    const frame = previewFrameRef.current;
+    const previewWindow = frame?.contentWindow;
+    const previewDocument = frame?.contentDocument;
+    if (!previewWindow || !previewDocument) {
+      setError("プレビューの印刷準備に失敗しました。ページを再読み込みして再試行してください。");
+      return;
+    }
 
-    const printableHtml = html.replace(
-      "</body>",
-      `<script>
-        const runPrint = async () => {
-          if (document.fonts && document.fonts.ready) {
-            try {
-              await document.fonts.ready;
-            } catch {}
-          }
-          window.focus();
-          window.print();
-        };
-
-        window.addEventListener("load", () => {
-          setTimeout(() => {
-            void runPrint();
-          }, 300);
-        }, { once: true });
-
-        window.addEventListener("afterprint", () => {
-          window.close();
-        });
-      </script>
-      </body>`
-    );
-
-    previewWindow.document.open();
-    previewWindow.document.write(printableHtml);
-    previewWindow.document.close();
+    try {
+      setError("");
+      setPrinting(true);
+      if (previewDocument.fonts?.ready) {
+        await previewDocument.fonts.ready;
+      }
+      await new Promise((resolve) => window.setTimeout(resolve, 300));
+      previewWindow.focus();
+      previewWindow.print();
+    } catch {
+      setError("PDF出力に失敗しました。ブラウザの印刷機能が利用可能か確認してください。");
+    } finally {
+      setPrinting(false);
+    }
   };
 
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">プレビュー</h2>
-        <button className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed" onClick={handlePdf} disabled={loading || !html}>
+        <button
+          className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={handlePdf}
+          disabled={loading || !html || printing}
+        >
           {IS_DEMO_MODE ? "PDF出力" : "PDFダウンロード"}
         </button>
       </div>
@@ -83,6 +79,7 @@ export default function PreviewPage() {
       {!loading && !error ? (
         <div className="bg-white border rounded overflow-hidden">
           <iframe
+            ref={previewFrameRef}
             title="resume-preview"
             srcDoc={html}
             className="w-full min-h-[1200px] border-0"
