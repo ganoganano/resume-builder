@@ -1,0 +1,34 @@
+# Backend dependencies for Resume Converter Application
+# Python 3.11+ compatible
+
+# FastAPI - Modern, fast web framework for building APIs with Python
+# Provides the main application framework, routing, and dependency injection
+fastapi>=0.104.0
+
+# Uvicorn - ASGI web server implementation for Python
+# The [standard] extra includes additional dependencies for better performance (uvloop, httptools, etc.)
+# Used as the ASGI server to run the FastAPI application
+uvicorn[standard]>=0.24.0
+
+# SQLAlchemy - SQL toolkit and ORM for Python
+# Used for database models, querying, and SQLite database management
+sqlalchemy>=2.0.0
+
+# Pydantic - Data validation and settings management using Python type hints
+# Used for request/response schema validation and serialization
+pydantic>=2.5.0
+
+# Jinja2 - Modern and designer-friendly templating language for Python
+# Used for rendering HTML templates for the resume preview and PDF generation
+jinja2>=3.1.0
+
+# WeasyPrint - Converts HTML/CSS documents to PDF
+# Used to generate PDF resumes from the Jinja2-rendered HTML templates
+weasyprint>=60.0
+
+# python-dotenv - Reads key-value pairs from .env file and sets them as environment variables
+# Used for managing environment-specific configuration (ports, debug mode, etc.)
+python-dotenv>=1.0.0
+
+# Markdown - Render self PR markdown into HTML for preview/PDF output
+markdown>=3.7.0

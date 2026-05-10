@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>職務経歴書 - {{ profile.name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-scale: {{ settings.font_scale }};
+        }
+
+        /* Print styles */
+        @page {
+            size: A4;
+            margin: 15mm 20mm;
+        }
+
+        /* Base styles */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            font-size: calc(10.5pt * var(--font-scale));
+            line-height: 1.42;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: calc(22pt * var(--font-scale));
+            font-weight: 700;
+            margin: 0 0 6px 0;
+            color: #1a1a1a;
+            border-bottom: 3px solid #2c5282;
+            padding-bottom: 6px;
+        }
+
+        h2 {
+            font-size: calc(14pt * var(--font-scale));
+            font-weight: 700;
+            margin: 18px 0 8px 0;
+            color: #2c5282;
+            border-left: 4px solid #2c5282;
+            padding-left: 10px;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            font-size: calc(12pt * var(--font-scale));
+            font-weight: 700;
+            margin: 12px 0 6px 0;
+            color: #333;
+        }
+
+        h4 {
+            font-size: calc(11pt * var(--font-scale));
+            font-weight: 600;
+            margin: 8px 0 4px 0;
+            color: #444;
+        }
+
+        p {
+            margin: 4px 0;
+        }
+
+        /* Header section */
+        .header {
+            margin-bottom: 14px;
+        }
+
+        .header-meta {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            margin-top: 10px;
+        }
+
+        .header-summary {
+            text-align: right;
+        }
+
+        .header-name {
+            display: block;
+            font-size: calc(11pt * var(--font-scale));
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 2px;
+        }
+
+        .header-date {
+            display: block;
+            font-size: calc(10pt * var(--font-scale));
+            color: #666;
+        }
+
+        .self-pr {
+            margin: 0 0 18px 0;
+        }
+
+        .self-pr-heading {
+            font-size: calc(14pt * var(--font-scale));
+            font-weight: 700;
+            color: #2c5282;
+            margin: 0 0 6px 0;
+            border-left: 4px solid #2c5282;
+            padding-left: 10px;
+        }
+
+        .self-pr-body {
+            padding: 0 0 0 12px;
+        }
+
+        .self-pr-markdown > *:first-child {
+            margin-top: 0;
+        }
+
+        .self-pr-markdown > *:last-child {
+            margin-bottom: 0;
+        }
+
+        .self-pr-markdown p,
+        .self-pr-markdown ul,
+        .self-pr-markdown ol,
+        .self-pr-markdown blockquote {
+            margin: 3px 0;
+        }
+
+        .self-pr-markdown ul,
+        .self-pr-markdown ol {
+            padding-left: 16px;
+        }
+
+        .self-pr-markdown li,
+        .project-field-markdown li {
+            margin-bottom: 1px;
+            line-height: 1.25;
+        }
+
+        .self-pr-markdown h1,
+        .self-pr-markdown h2,
+        .self-pr-markdown h3,
+        .self-pr-markdown h4 {
+            color: #2c5282;
+            margin: 4px 0 2px 0;
+            border: none;
+            padding: 0;
+        }
+
+        .self-pr-markdown h1 {
+            font-size: calc(14pt * var(--font-scale));
+        }
+
+        .self-pr-markdown h2 {
+            font-size: calc(13pt * var(--font-scale));
+        }
+
+        .self-pr-markdown h3,
+        .self-pr-markdown h4 {
+            font-size: calc(11pt * var(--font-scale));
+        }
+
+        .self-pr-markdown blockquote {
+            margin-left: 0;
+            padding-left: 12px;
+            border-left: 3px solid #cbd5e0;
+            color: #4a5568;
+        }
+
+        .self-pr-markdown code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            background: #edf2f7;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 0.95em;
+        }
+
+        .self-pr-markdown pre {
+            background: #edf2f7;
+            padding: 10px 12px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .self-pr-markdown pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* PR Highlights */
+        /* Employment section */
+        .employment-section {
+            page-break-inside: avoid;
+            margin-bottom: 14px;
+        }
+
+        .employment-opening {
+            page-break-inside: avoid;
+        }
+
+        .allow-section-split .employment-section {
+            page-break-inside: auto;
+        }
+
+        .allow-section-split .project-item {
+            page-break-inside: auto;
+        }
+
+        .employment-header {
+            background: #edf2f7;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .employment-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 16px;
+        }
+
+        .employment-company {
+            font-size: calc(13pt * var(--font-scale));
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 0 4px 0;
+        }
+
+        .employment-period {
+            font-size: calc(10pt * var(--font-scale));
+            color: #4a5568;
+            margin: 0;
+        }
+
+        .employment-note {
+            font-size: calc(9pt * var(--font-scale));
+            color: #718096;
+            margin: 4px 0 0 0;
+            font-style: italic;
+        }
+
+        /* Project section */
+        .project-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            page-break-inside: avoid;
+        }
+
+        .project-title {
+            font-size: calc(11pt * var(--font-scale));
+            font-weight: 700;
+            color: #2c5282;
+            margin: 0 0 6px 0;
+        }
+
+        .project-layout-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .project-layout-table td {
+            vertical-align: top;
+        }
+
+        .project-meta-column {
+            width: 88px;
+            border-right: 1px solid #e2e8f0;
+            padding-right: 10px;
+            text-align: center;
+        }
+
+        .project-main-column {
+            padding: 0 14px;
+        }
+
+        .project-tech-column {
+            width: 150px;
+            border-left: 1px solid #e2e8f0;
+            padding-left: 12px;
+        }
+
+        .project-side-heading {
+            font-size: calc(9pt * var(--font-scale));
+            font-weight: 700;
+            color: #4a5568;
+            margin: 0 0 8px 0;
+            letter-spacing: 0.03em;
+        }
+
+        .project-date-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .project-date-item {
+            margin: 0;
+        }
+
+        .project-date-value {
+            display: block;
+            font-size: calc(9.5pt * var(--font-scale));
+            font-weight: 700;
+            color: #2d3748;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .project-date-separator {
+            position: relative;
+            height: 10px;
+            margin: 0;
+        }
+
+        .project-date-separator::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            border-left: 0.5px solid #a0aec0;
+            transform: translateX(-50%);
+        }
+
+        .project-date-separator::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 0.5px;
+            height: 100%;
+            background: #a0aec0;
+        }
+
+        .project-meta-block {
+            padding-top: 12px;
+        }
+
+        .project-meta-entry {
+            margin-bottom: 8px;
+        }
+
+        .project-meta-label {
+            display: block;
+            font-size: calc(8.5pt * var(--font-scale));
+            color: #718096;
+            margin-bottom: 3px;
+            font-weight: 700;
+        }
+
+        .project-meta-value {
+            display: block;
+            font-size: calc(9pt * var(--font-scale));
+            color: #2d3748;
+            line-height: 1.35;
+            font-weight: 400;
+        }
+
+        .project-meta-tags {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .project-meta-tags .tech-tag {
+            text-align: center;
+        }
+
+        .project-field {
+            margin-bottom: 6px;
+        }
+
+        .project-field-label {
+            font-weight: 600;
+            color: #4a5568;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .project-field-content {
+            display: block;
+            padding-left: 12px;
+        }
+
+        .project-field-content.pre-wrap {
+            white-space: pre-wrap;
+        }
+
+        .project-field-markdown {
+            padding-left: 12px;
+        }
+
+        .project-field-markdown > *:first-child {
+            margin-top: 0;
+        }
+
+        .project-field-markdown > *:last-child {
+            margin-bottom: 0;
+        }
+
+        .project-field-markdown p,
+        .project-field-markdown ul,
+        .project-field-markdown ol,
+        .project-field-markdown blockquote {
+            margin: 2px 0;
+        }
+
+        .project-field-markdown ul,
+        .project-field-markdown ol {
+            padding-left: 12px;
+        }
+
+        .project-field ul,
+        .project-field .tech-tags {
+            margin-top: 4px;
+            margin-left: 12px;
+        }
+
+        .project-tech-group {
+            margin-bottom: 8px;
+        }
+
+        .project-tech-label {
+            display: block;
+            font-size: 8.5pt;
+            color: #718096;
+            margin-bottom: 3px;
+        }
+
+        /* Technology tags */
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 9pt;
+            font-weight: 500;
+        }
+
+        /* Skills section */
+        .skills-section {
+            margin-bottom: 16px;
+        }
+
+        .skill-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+        }
+
+        .skill-table th,
+        .skill-table td {
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .skill-table th {
+            font-weight: 600;
+            color: #4a5568;
+            background: #f7fafc;
+        }
+
+        .skill-table th:first-child {
+            width: 12%;
+        }
+
+        .skill-table th:nth-child(2) {
+            width: 24%;
+        }
+
+        .skill-table th:nth-child(3) {
+            width: 16%;
+        }
+
+        .skill-table th:nth-child(4) {
+            width: 48%;
+        }
+
+        .skill-table td {
+            vertical-align: top;
+        }
+
+        .skill-category-cell {
+            font-weight: 700;
+            color: #2c5282;
+            background: #f7fafc;
+            white-space: nowrap;
+            width: 1%;
+        }
+
+        .skill-name {
+            font-weight: 600;
+        }
+
+        .skill-experience {
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .skill-description {
+            color: #4a5568;
+        }
+
+        /* Certifications section */
+        .certifications-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+        }
+
+        .certifications-table th,
+        .certifications-table td {
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .certifications-table th {
+            font-weight: 600;
+            color: #4a5568;
+            background: #f7fafc;
+            width: 20%;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 6px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 3px;
+        }
+
+        /* Utility */
+        .text-muted {
+            color: #718096;
+        }
+
+        .no-break {
+            page-break-inside: avoid;
+        }
+
+        .page-break-before {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body class="{% if settings.allow_section_split %}allow-section-split{% endif %}">
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>職務経歴書</h1>
+            <div class="header-meta">
+                <div class="header-summary">
+                    <span class="header-date">作成日: {{ display_as_of_date }}</span>
+                    {% if profile.name %}
+                    <span class="header-name">氏名: {{ profile.name }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% for section_key in settings.section_order %}
+            {% if section_key == "self_pr" and self_pr_html %}
+            <section class="self-pr">
+                <div class="self-pr-heading">自己PR</div>
+                <div class="self-pr-body">
+                    <div class="self-pr-markdown">{{ self_pr_html | safe }}</div>
+                </div>
+            </section>
+            {% endif %}
+
+            {% if section_key == "employment" %}
+            <section>
+                {% for employment in employments %}
+                <div class="employment-section">
+                    {% if loop.first %}
+                    <h2>職務経歴</h2>
+                    {% endif %}
+                    {% if projects_by_employment.get(employment.id) %}
+                        <div class="employment-opening">
+                            <div class="employment-header">
+                                <div class="employment-title-row">
+                                    <p class="employment-company">{{ employment.company_name }}</p>
+                                    <p class="employment-period">
+                                        {{ employment.start_date }} ～ {{ employment.end_date if employment.end_date else '現在' }}
+                                    </p>
+                                </div>
+                                {% if employment.note %}
+                                <p class="employment-note">※ {{ employment.note }}</p>
+                                {% endif %}
+                            </div>
+                            {% set first_project = projects_by_employment[employment.id][0] %}
+                            <div class="project-item">
+                                <p class="project-title">{{ first_project.title }}</p>
+                                <table class="project-layout-table">
+                                    <tr>
+                                    <td class="project-meta-column">
+                                        <p class="project-side-heading">期間</p>
+                                        <div class="project-date-stack">
+                                            <div class="project-date-item">
+                                                <span class="project-date-value">{{ first_project.start_date }}</span>
+                                            </div>
+                                            <div class="project-date-separator"></div>
+                                            <div class="project-date-item">
+                                                <span class="project-date-value">{{ first_project.end_date if first_project.end_date else '現在' }}</span>
+                                            </div>
+                                        </div>
+
+                                        {% if first_project.role or first_project.team_size or first_project.phases %}
+                                        <div class="project-meta-block">
+                                            {% if first_project.role %}
+                                            <div class="project-meta-entry">
+                                                <span class="project-meta-label">役割</span>
+                                                <span class="project-meta-value">{{ first_project.role }}</span>
+                                            </div>
+                                            {% endif %}
+
+                                            {% if first_project.team_size %}
+                                            <div class="project-meta-entry">
+                                                <span class="project-meta-label">規模</span>
+                                                <span class="project-meta-value">{{ first_project.team_size }}</span>
+                                            </div>
+                                            {% endif %}
+
+                                            {% if first_project.phases %}
+                                            <div class="project-meta-entry">
+                                                <span class="project-meta-label">担当</span>
+                                                <div class="project-meta-tags">
+                                                    {% for phase in first_project.phases %}
+                                                    <span class="tech-tag">{{ phase }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="project-main-column">
+                                        {% if first_project.overview %}
+                                        <div class="project-field">
+                                            <span class="project-field-label">【概要】</span>
+                                            <span class="project-field-content pre-wrap">{{ first_project.overview }}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if first_project.tasks %}
+                                        <div class="project-field">
+                                            <span class="project-field-label">【業務内容】</span>
+                                            <div class="project-field-markdown">{{ first_project.tasks_html | safe }}</div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if first_project.achievements %}
+                                        <div class="project-field">
+                                            <span class="project-field-label">【実績・取り組み】</span>
+                                            <div class="project-field-markdown">{{ first_project.achievements_html | safe }}</div>
+                                        </div>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="project-tech-column">
+                                        <p class="project-side-heading">環境</p>
+
+                                        {% if first_project.os %}
+                                        <div class="project-tech-group">
+                                            <span class="project-tech-label">OS</span>
+                                            <div class="tech-tags">
+                                                {% for os in first_project.os %}
+                                                <span class="tech-tag">{{ os }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if first_project.languages %}
+                                        <div class="project-tech-group">
+                                            <span class="project-tech-label">言語</span>
+                                            <div class="tech-tags">
+                                                {% for lang in first_project.languages %}
+                                                <span class="tech-tag">{{ lang }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if first_project.frameworks %}
+                                        <div class="project-tech-group">
+                                            <span class="project-tech-label">フレームワーク</span>
+                                            <div class="tech-tags">
+                                                {% for fw in first_project.frameworks %}
+                                                <span class="tech-tag">{{ fw }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if first_project.databases %}
+                                        <div class="project-tech-group">
+                                            <span class="project-tech-label">DB</span>
+                                            <div class="tech-tags">
+                                                {% for db in first_project.databases %}
+                                                <span class="tech-tag">{{ db }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if first_project.others %}
+                                        <div class="project-tech-group">
+                                            <span class="project-tech-label">その他</span>
+                                            <div class="tech-tags">
+                                                {% for other in first_project.others %}
+                                                <span class="tech-tag">{{ other }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if not (first_project.os or first_project.languages or first_project.frameworks or first_project.databases or first_project.others) %}
+                                        <p class="text-muted">記載なし</p>
+                                        {% endif %}
+                                    </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        {% for project in projects_by_employment[employment.id][1:] %}
+                        <div class="project-item">
+                            <p class="project-title">{{ project.title }}</p>
+                            <table class="project-layout-table">
+                                <tr>
+                                <td class="project-meta-column">
+                                    <p class="project-side-heading">期間</p>
+                                    <div class="project-date-stack">
+                                        <div class="project-date-item">
+                                            <span class="project-date-value">{{ project.start_date }}</span>
+                                        </div>
+                                        <div class="project-date-separator"></div>
+                                        <div class="project-date-item">
+                                            <span class="project-date-value">{{ project.end_date if project.end_date else '現在' }}</span>
+                                        </div>
+                                    </div>
+
+                                    {% if project.role or project.team_size or project.phases %}
+                                    <div class="project-meta-block">
+                                        {% if project.role %}
+                                        <div class="project-meta-entry">
+                                            <span class="project-meta-label">役割</span>
+                                            <span class="project-meta-value">{{ project.role }}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if project.team_size %}
+                                        <div class="project-meta-entry">
+                                            <span class="project-meta-label">規模</span>
+                                            <span class="project-meta-value">{{ project.team_size }}</span>
+                                        </div>
+                                        {% endif %}
+
+                                        {% if project.phases %}
+                                        <div class="project-meta-entry">
+                                            <span class="project-meta-label">担当</span>
+                                            <div class="project-meta-tags">
+                                                {% for phase in project.phases %}
+                                                <span class="tech-tag">{{ phase }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </td>
+
+                                <td class="project-main-column">
+                                    {% if project.overview %}
+                                    <div class="project-field">
+                                        <span class="project-field-label">【概要】</span>
+                                        <span class="project-field-content pre-wrap">{{ project.overview }}</span>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if project.tasks %}
+                                    <div class="project-field">
+                                        <span class="project-field-label">【業務内容】</span>
+                                        <div class="project-field-markdown">{{ project.tasks_html | safe }}</div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if project.achievements %}
+                                    <div class="project-field">
+                                        <span class="project-field-label">【実績・取り組み】</span>
+                                        <div class="project-field-markdown">{{ project.achievements_html | safe }}</div>
+                                    </div>
+                                    {% endif %}
+                                </td>
+
+                                <td class="project-tech-column">
+                                    <p class="project-side-heading">環境</p>
+
+                                    {% if project.os %}
+                                    <div class="project-tech-group">
+                                        <span class="project-tech-label">OS</span>
+                                        <div class="tech-tags">
+                                            {% for os in project.os %}
+                                            <span class="tech-tag">{{ os }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if project.languages %}
+                                    <div class="project-tech-group">
+                                        <span class="project-tech-label">言語</span>
+                                        <div class="tech-tags">
+                                            {% for lang in project.languages %}
+                                            <span class="tech-tag">{{ lang }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if project.frameworks %}
+                                    <div class="project-tech-group">
+                                        <span class="project-tech-label">フレームワーク</span>
+                                        <div class="tech-tags">
+                                            {% for fw in project.frameworks %}
+                                            <span class="tech-tag">{{ fw }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if project.databases %}
+                                    <div class="project-tech-group">
+                                        <span class="project-tech-label">DB</span>
+                                        <div class="tech-tags">
+                                            {% for db in project.databases %}
+                                            <span class="tech-tag">{{ db }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if project.others %}
+                                    <div class="project-tech-group">
+                                        <span class="project-tech-label">その他</span>
+                                        <div class="tech-tags">
+                                            {% for other in project.others %}
+                                            <span class="tech-tag">{{ other }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if not (project.os or project.languages or project.frameworks or project.databases or project.others) %}
+                                    <p class="text-muted">記載なし</p>
+                                    {% endif %}
+                                </td>
+                                </tr>
+                            </table>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="employment-opening">
+                        <div class="employment-header">
+                            <div class="employment-title-row">
+                                <p class="employment-company">{{ employment.company_name }}</p>
+                                <p class="employment-period">
+                                    {{ employment.start_date }} ～ {{ employment.end_date if employment.end_date else '現在' }}
+                                </p>
+                            </div>
+                            {% if employment.note %}
+                            <p class="employment-note">※ {{ employment.note }}</p>
+                            {% endif %}
+                        </div>
+                        <p class="text-muted">プロジェクト情報はありません。</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </section>
+            {% endif %}
+
+            {% if section_key == "skills" and skills_by_category %}
+            <section class="skills-section{% if settings.skills_on_new_page %} page-break-before{% endif %}">
+                <h2>スキル</h2>
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th>分類</th>
+                            <th>スキル</th>
+                            <th>経験</th>
+                            <th>備考</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in skills_by_category.keys() %}
+                        {% for skill in skills_by_category[category] %}
+                        <tr>
+                            {% if loop.first %}
+                            <td class="skill-category-cell" rowspan="{{ skills_by_category[category] | length }}">{{ category }}</td>
+                            {% endif %}
+                            <td class="skill-name">{{ skill.name }}</td>
+                            <td class="skill-experience">{{ skill.experience if skill.experience else '-' }}</td>
+                            <td class="skill-description">{{ skill.description if skill.description else '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+            {% endif %}
+
+            {% if section_key == "certifications" and certifications %}
+            <section{% if settings.certifications_on_new_page %} class="page-break-before"{% endif %}>
+                <h2>資格</h2>
+                <table class="certifications-table">
+                    <thead>
+                        <tr>
+                            <th>取得年月</th>
+                            <th>資格名</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cert in certifications %}
+                        <tr>
+                            <td>{{ cert.date }}</td>
+                            <td>{{ cert.name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>
