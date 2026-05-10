@@ -15,7 +15,7 @@ HTML プレビューと PDF 出力を行うことができます。
 ## ディレクトリ構成
 
 ```text
-job_description/
+resume-builder/
   backend/      FastAPI + SQLite
   frontend/     Next.js
   start.sh      ローカルでの起動スクリプト
@@ -47,7 +47,7 @@ job_description/
 ### 通常モード
 
 ```bash
-cd output/job_description
+cd resume-builder
 ./start.sh
 ```
 
@@ -56,7 +56,7 @@ cd output/job_description
 ### デモモード
 
 ```bash
-cd output/job_description/frontend
+cd resume-builder/frontend
 npm install
 NEXT_PUBLIC_DEMO_MODE=true npm run dev
 ```
@@ -69,7 +69,7 @@ NEXT_PUBLIC_DEMO_MODE=true npm run dev
 
 設定値:
 
-- Root Directory: `output/job_description/frontend`
+- Root Directory: `resume-builder/frontend`
 - Framework Preset: `Next.js`
 - Environment Variable: `NEXT_PUBLIC_DEMO_MODE=true`
 
@@ -84,10 +84,7 @@ NEXT_PUBLIC_DEMO_MODE=true npm run dev
 
 - 通常モード: バックエンド API 経由で保存・復元
 - デモモード: `localStorage` の内容を JSON として保存・復元
-
-PDF から変換したサンプル JSON:
-
-- [resume-backup-from-pdf.json](./resume-backup-from-pdf.json)
+- example.json がサンプルなので参考にしてください
 
 ## 環境変数
 
