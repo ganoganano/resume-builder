@@ -37,18 +37,43 @@ export default function PreviewPage() {
 
     const previewWindow = window.open("", "_blank", "noopener,noreferrer");
     if (!previewWindow) return;
+
+    const printableHtml = html.replace(
+      "</body>",
+      `<script>
+        const runPrint = async () => {
+          if (document.fonts && document.fonts.ready) {
+            try {
+              await document.fonts.ready;
+            } catch {}
+          }
+          window.focus();
+          window.print();
+        };
+
+        window.addEventListener("load", () => {
+          setTimeout(() => {
+            void runPrint();
+          }, 300);
+        }, { once: true });
+
+        window.addEventListener("afterprint", () => {
+          window.close();
+        });
+      </script>
+      </body>`
+    );
+
     previewWindow.document.open();
-    previewWindow.document.write(html);
+    previewWindow.document.write(printableHtml);
     previewWindow.document.close();
-    previewWindow.focus();
-    previewWindow.print();
   };
 
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold">プレビュー</h2>
-        <button className="btn-primary" onClick={handlePdf}>
+        <button className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed" onClick={handlePdf} disabled={loading || !html}>
           {IS_DEMO_MODE ? "PDF出力" : "PDFダウンロード"}
         </button>
       </div>
