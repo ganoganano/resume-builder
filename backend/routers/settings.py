@@ -19,8 +19,6 @@ def get_or_create_settings(db: Session) -> ResumeSettings:
     if settings is None:
         settings = ResumeSettings(
             id=1,
-            skills_on_new_page=False,
-            certifications_on_new_page=False,
             allow_section_split=False,
             font_scale=1.0,
             section_order='["self_pr","employment","skills","certifications"]',
@@ -35,8 +33,6 @@ def get_or_create_settings(db: Session) -> ResumeSettings:
 def to_response(settings: ResumeSettings) -> ResumeSettingsResponse:
     return ResumeSettingsResponse(
         id=settings.id,
-        skills_on_new_page=settings.skills_on_new_page,
-        certifications_on_new_page=settings.certifications_on_new_page,
         allow_section_split=settings.allow_section_split,
         font_scale=settings.font_scale,
         section_order=json.loads(settings.section_order or '["self_pr","employment","skills","certifications"]'),
@@ -58,8 +54,6 @@ def update_settings(
     db: Session = Depends(get_db)
 ) -> ResumeSettingsResponse:
     settings = get_or_create_settings(db)
-    settings.skills_on_new_page = settings_input.skills_on_new_page
-    settings.certifications_on_new_page = settings_input.certifications_on_new_page
     settings.allow_section_split = settings_input.allow_section_split
     settings.font_scale = settings_input.font_scale
     settings.section_order = json.dumps(settings_input.section_order, ensure_ascii=False)

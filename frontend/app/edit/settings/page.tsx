@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { exportBackup, fetchSettings, importBackup, ResumeSettings, updateSettings } from "@/lib/api";
 
 const defaultSettings: ResumeSettings = {
-  skills_on_new_page: false,
-  certifications_on_new_page: false,
   allow_section_split: false,
   font_scale: 1.0,
   section_order: ["self_pr", "employment", "skills", "certifications"],
@@ -86,32 +84,6 @@ export default function SettingsPage() {
       <div className="card space-y-4">
         <div className="space-y-3">
           <h3 className="text-base font-semibold">ページ設定</h3>
-
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              className="mt-1"
-              checked={form.skills_on_new_page}
-              onChange={(e) => setForm({ ...form, skills_on_new_page: e.target.checked })}
-            />
-            <div>
-              <div className="font-medium">スキルを新しいページから開始する</div>
-              <p className="text-sm text-slate-500">有効にすると、スキルセクションは前の内容から切り離して次ページの先頭から出力します。</p>
-            </div>
-          </label>
-
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              className="mt-1"
-              checked={form.certifications_on_new_page}
-              onChange={(e) => setForm({ ...form, certifications_on_new_page: e.target.checked })}
-            />
-            <div>
-              <div className="font-medium">資格を新しいページから開始する</div>
-              <p className="text-sm text-slate-500">有効にすると、資格セクションは前の内容から切り離して次ページの先頭から出力します。</p>
-            </div>
-          </label>
 
           <label className="flex items-start gap-3">
             <input

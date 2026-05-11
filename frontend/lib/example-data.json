@@ -9,8 +9,6 @@
   },
   "settings": {
     "id": 1,
-    "skills_on_new_page": false,
-    "certifications_on_new_page": false,
     "section_order": [
       "self_pr",
       "employment",

@@ -56,8 +56,6 @@ export type Certification = { id: number; sort_order: number; date?: string | nu
 export type ResumeSectionKey = "self_pr" | "employment" | "skills" | "certifications";
 export type ResumeSettings = {
   id?: number;
-  skills_on_new_page: boolean;
-  certifications_on_new_page: boolean;
   allow_section_split: boolean;
   font_scale: number;
   section_order: ResumeSectionKey[];
@@ -89,8 +87,6 @@ const defaultProfile: Profile = {
 
 const defaultSettings: ResumeSettings = {
   id: 1,
-  skills_on_new_page: false,
-  certifications_on_new_page: false,
   allow_section_split: false,
   font_scale: 1.0,
   section_order: ["self_pr", "employment", "skills", "certifications"],
@@ -163,8 +159,6 @@ function normalizeBackup(input: unknown): ResumeBackup {
     },
     settings: {
       id: 1,
-      skills_on_new_page: Boolean(data.settings?.skills_on_new_page),
-      certifications_on_new_page: Boolean(data.settings?.certifications_on_new_page),
       allow_section_split: Boolean(data.settings?.allow_section_split),
       font_scale: typeof data.settings?.font_scale === "number" ? data.settings.font_scale : 1.0,
       section_order: normalizeSectionOrder(data.settings?.section_order),

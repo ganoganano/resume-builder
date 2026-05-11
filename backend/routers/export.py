@@ -87,12 +87,14 @@ def build_backup_payload(db: Session) -> dict:
         },
         "settings": {
             "id": 1,
-            "skills_on_new_page": settings.skills_on_new_page if settings else False,
-            "certifications_on_new_page": settings.certifications_on_new_page if settings else False,
             "allow_section_split": settings.allow_section_split if settings else False,
             "font_scale": settings.font_scale if settings else 1.0,
             "section_order": json.loads(settings.section_order or '["self_pr","employment","skills","certifications"]')
             if settings else ["self_pr", "employment", "skills", "certifications"],
+            "section_page_breaks": json.loads(
+                settings.section_page_breaks
+                or '{"self_pr": false, "employment": false, "skills": false, "certifications": false}'
+            ) if settings else {"self_pr": False, "employment": False, "skills": False, "certifications": False},
         },
         "employments": [
             {
@@ -185,12 +187,17 @@ def restore_backup_payload(db: Session, payload: dict) -> None:
     db.add(
         ResumeSettings(
             id=1,
-            skills_on_new_page=bool(settings.get("skills_on_new_page", False)),
-            certifications_on_new_page=bool(settings.get("certifications_on_new_page", False)),
             allow_section_split=bool(settings.get("allow_section_split", False)),
             font_scale=float(settings.get("font_scale", 1.0)),
             section_order=json.dumps(
                 settings.get("section_order", ["self_pr", "employment", "skills", "certifications"]),
+                ensure_ascii=False,
+            ),
+            section_page_breaks=json.dumps(
+                settings.get(
+                    "section_page_breaks",
+                    {"self_pr": False, "employment": False, "skills": False, "certifications": False},
+                ),
                 ensure_ascii=False,
             ),
         )

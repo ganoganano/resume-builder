@@ -230,7 +230,7 @@ function renderSection(sectionKey: ResumeSectionKey, data: ResumeBackup): string
 
   if (sectionKey === "skills" && data.skills.length > 0) {
     return `
-      <section class="skills-section${data.settings.skills_on_new_page || data.settings.section_page_breaks[sectionKey] ? " page-break-before" : ""}">
+      <section class="skills-section${data.settings.section_page_breaks[sectionKey] ? " page-break-before" : ""}">
         <h2>スキル</h2>
         <table class="skill-table">
           <colgroup>
@@ -250,7 +250,7 @@ function renderSection(sectionKey: ResumeSectionKey, data: ResumeBackup): string
 
   if (sectionKey === "certifications" && data.certifications.length > 0) {
     return `
-      <section class="${data.settings.certifications_on_new_page || data.settings.section_page_breaks[sectionKey] ? "page-break-before" : ""}">
+      <section class="${data.settings.section_page_breaks[sectionKey] ? "page-break-before" : ""}">
         <h2>資格</h2>
         <table class="certifications-table">
           <thead><tr><th>取得年月</th><th>資格名</th></tr></thead>

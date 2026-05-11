@@ -135,8 +135,6 @@ def get_resume_data(db: Session) -> Dict[str, Any]:
     if settings is None:
         settings = ResumeSettings(
             id=1,
-            skills_on_new_page=False,
-            certifications_on_new_page=False,
             allow_section_split=False,
             font_scale=1.0,
             section_order='["self_pr","employment","skills","certifications"]',
@@ -243,8 +241,6 @@ def get_resume_data(db: Session) -> Dict[str, Any]:
         'self_pr_html': render_markdown(profile.self_pr),
         'pr_highlights': pr_highlights_list,
         'settings': {
-            'skills_on_new_page': settings.skills_on_new_page,
-            'certifications_on_new_page': settings.certifications_on_new_page,
             'allow_section_split': settings.allow_section_split,
             'font_scale': settings.font_scale,
             'section_order': section_order,

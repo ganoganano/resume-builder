@@ -324,8 +324,6 @@ SECTION_KEYS = ("self_pr", "employment", "skills", "certifications")
 
 class ResumeSettingsBase(BaseModel):
     """Base schema for resume layout settings."""
-    skills_on_new_page: bool = False
-    certifications_on_new_page: bool = False
     allow_section_split: bool = False
     font_scale: float = 1.0
     section_order: List[str] = Field(default_factory=lambda: list(SECTION_KEYS))

@@ -5,6 +5,7 @@ from datetime import datetime
 from typing import Generator
 
 from sqlalchemy import create_engine, text
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session, sessionmaker
 
 from models import Base, Certification, Profile, ResumeSettings, Skill
@@ -79,8 +80,6 @@ def create_default_settings() -> None:
             db.add(
                 ResumeSettings(
                     id=1,
-                    skills_on_new_page=False,
-                    certifications_on_new_page=False,
                     allow_section_split=False,
                     font_scale=1.0,
                     section_order='["self_pr","employment","skills","certifications"]',
@@ -190,6 +189,24 @@ def ensure_resume_settings_columns() -> None:
             )
 
 
+def drop_legacy_resume_settings_columns() -> None:
+    """
+    Remove obsolete resume_settings columns kept from the old per-section page break UI.
+    """
+    with engine.begin() as connection:
+        columns = connection.execute(text("PRAGMA table_info(resume_settings)")).fetchall()
+        column_names = {column[1] for column in columns}
+        for column_name in ("skills_on_new_page", "certifications_on_new_page"):
+            if column_name not in column_names:
+                continue
+            try:
+                connection.execute(text(f"ALTER TABLE resume_settings DROP COLUMN {column_name}"))
+            except OperationalError:
+                # Older SQLite builds may not support DROP COLUMN.
+                # In that case the application model and API already ignore these fields.
+                pass
+
+
 def ensure_skill_category_sort_order_column() -> None:
     """
     Add skills.category_sort_order for existing SQLite databases when missing.
@@ -243,6 +260,7 @@ def setup_database() -> None:
     """
     init_db()
     ensure_resume_settings_columns()
+    drop_legacy_resume_settings_columns()
     ensure_skill_category_sort_order_column()
     ensure_certification_sort_order_column()
     create_default_profile()

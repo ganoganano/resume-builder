@@ -56,8 +56,6 @@ class ResumeSettings(Base):
     __tablename__ = "resume_settings"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    skills_on_new_page: Mapped[bool] = mapped_column(default=False, nullable=False)
-    certifications_on_new_page: Mapped[bool] = mapped_column(default=False, nullable=False)
     allow_section_split: Mapped[bool] = mapped_column(default=False, nullable=False)
     font_scale: Mapped[float] = mapped_column(Float, default=1.0, nullable=False)
     section_order: Mapped[str] = mapped_column(
