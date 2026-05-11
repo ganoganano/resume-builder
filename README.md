@@ -90,6 +90,18 @@ docker compose down
 docker compose down -v
 ```
 
+### 開発モード
+
+ホットリロード付きで起動:
+
+```bash
+docker compose --profile dev up --build --watch
+```
+
+- フロントエンドは `next dev` で起動します
+- バックエンドは `uvicorn --reload` で起動します
+- `frontend/` と `backend/` の変更がコンテナへ同期され、自動で反映されます
+
 ### デモモード
 
 ```bash

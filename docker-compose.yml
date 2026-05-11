@@ -53,6 +53,91 @@ services:
     networks:
       - app_net
 
+  backend-dev:
+    profiles:
+      - dev
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--reload-dir", "/app"]
+    environment:
+      DATABASE_URL: sqlite:////app/data/resume.db
+      FRONTEND_URL: http://localhost:3000
+      WATCHFILES_FORCE_POLLING: "true"
+    volumes:
+      - resume_data:/app/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    develop:
+      watch:
+        - path: ./backend
+          action: sync
+          target: /app
+          ignore:
+            - .venv/
+            - __pycache__/
+            - resume.db
+    networks:
+      - app_net
+
+  frontend-dev:
+    profiles:
+      - dev
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        INTERNAL_API_URL: http://backend-dev:8000
+        NEXT_PUBLIC_DEMO_MODE: "false"
+    command: ["npm", "run", "dev", "--", "--hostname", "0.0.0.0", "--port", "3000"]
+    environment:
+      INTERNAL_API_URL: http://backend-dev:8000
+      NEXT_PUBLIC_DEMO_MODE: "false"
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "1"
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend-dev:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000').then((res) => { if (!res.ok) process.exit(1); }).catch(() => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    develop:
+      watch:
+        - path: ./frontend
+          action: sync
+          target: /app
+          ignore:
+            - node_modules/
+            - .next/
+            - coverage/
+            - dist/
+            - build/
+            - out/
+            - "*.tsbuildinfo"
+    networks:
+      - app_net
+
 volumes:
   resume_data:
 
