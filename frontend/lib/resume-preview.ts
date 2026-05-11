@@ -150,7 +150,7 @@ function renderSkillRows(skills: Skill[]): string {
         .map(
           (skill, index) => `
             <tr>
-              ${index === 0 ? `<td class="skill-category-cell" rowspan="${entries.length}">${escapeHtml(category)}</td>` : ""}
+              ${index === 0 ? `<td class="skill-category-cell" rowspan="${entries.length}" style="width: 4.6em; min-width: 4.6em; max-width: 4.6em;"><span class="skill-category-text">${escapeHtml(category)}</span></td>` : ""}
               <td class="skill-name">${escapeHtml(skill.name)}</td>
               <td class="skill-experience">${escapeHtml(skill.experience || "-")}</td>
               <td class="skill-description">${escapeHtml(skill.description || "-")}</td>
@@ -230,8 +230,14 @@ function renderSection(sectionKey: ResumeSectionKey, data: ResumeBackup): string
       <section class="skills-section${data.settings.skills_on_new_page ? " page-break-before" : ""}">
         <h2>スキル</h2>
         <table class="skill-table">
+          <colgroup>
+            <col class="skill-category-col" style="width: 5em; min-width: 5em; max-width: 5em;" />
+            <col class="skill-name-col" />
+            <col class="skill-experience-col" />
+            <col class="skill-description-col" />
+          </colgroup>
           <thead>
-            <tr><th>分類</th><th>スキル</th><th>経験</th><th>備考</th></tr>
+            <tr><th class="skill-category-head" style="width: 4.6em; min-width: 4.6em; max-width: 4.6em;">分類</th><th>スキル</th><th>経験</th><th>備考</th></tr>
           </thead>
           <tbody>${renderSkillRows(data.skills)}</tbody>
         </table>
@@ -330,13 +336,41 @@ export function buildResumePreviewHtml(data: ResumeBackup): string {
     .project-tech-group { margin-bottom: 6px; }
     .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tech-tag { display: inline-block; background: #e2e8f0; color: #2d3748; border-radius: 999px; padding: 2px 8px; font-size: calc(8.5pt * var(--font-scale)); line-height: 1.3; }
-    .skill-table, .certifications-table { width: 100%; border-collapse: collapse; font-size: calc(10pt * var(--font-scale)); }
-    .skill-table th, .skill-table td, .certifications-table th, .certifications-table td { padding: 6px 8px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    .skill-table, .certifications-table { width: 100%; border-collapse: collapse; font-size: calc(8.8pt * var(--font-scale)); }
+    .skill-table { table-layout: fixed; line-height: 1.2; }
+    .skill-category-col { width: 4.6em; min-width: 4.6em; max-width: 4.6em; }
+    .skill-name-col { width: 24%; }
+    .skill-experience-col { width: 12%; }
+    .skill-description-col { width: auto; }
+    .skill-table th, .skill-table td, .certifications-table th, .certifications-table td { padding: 2px 3px; text-align: left; border-bottom: 1px solid #e2e8f0; }
     .skill-table th, .certifications-table th { font-weight: 600; color: #4a5568; background: #f7fafc; }
-    .skill-category-cell { width: 1%; white-space: nowrap; font-weight: 600; color: #4a5568; }
-    .skill-name { width: 24%; }
-    .skill-experience { width: 12%; white-space: nowrap; }
-    .skill-description { color: #4a5568; }
+    .skill-table th { font-size: calc(8.4pt * var(--font-scale)); }
+    .skill-category-head {
+      width: 4.6em !important;
+      min-width: 4.6em !important;
+      max-width: 4.6em !important;
+      overflow: hidden;
+    }
+    .skill-category-cell {
+      width: 4.6em !important;
+      min-width: 4.6em !important;
+      max-width: 4.6em !important;
+      overflow: hidden;
+      font-weight: 600;
+      color: #4a5568;
+      vertical-align: middle;
+    }
+    .skill-category-text {
+      display: block;
+      width: 100%;
+      white-space: normal;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+      line-height: 1.1;
+    }
+    .skill-name { width: 24%; line-height: 1.15; }
+    .skill-experience { width: 12%; white-space: nowrap; line-height: 1.15; }
+    .skill-description { color: #4a5568; line-height: 1.15; }
     code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; background: #edf2f7; padding: 1px 4px; border-radius: 3px; font-size: 0.95em; }
     .text-muted { color: #718096; }
     .page-break-before { page-break-before: always; }

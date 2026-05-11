@@ -464,18 +464,38 @@
 
         /* Skills section */
         .skills-section {
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
         .skill-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10pt;
+            font-size: 8.8pt;
+            table-layout: fixed;
+            line-height: 1.2;
+        }
+
+        .skill-category-col {
+            width: 4.6em;
+            min-width: 4.6em;
+            max-width: 4.6em;
+        }
+
+        .skill-name-col {
+            width: 24%;
+        }
+
+        .skill-experience-col {
+            width: 12%;
+        }
+
+        .skill-description-col {
+            width: auto;
         }
 
         .skill-table th,
         .skill-table td {
-            padding: 6px 8px;
+            padding: 2px 3px;
             text-align: left;
             border-bottom: 1px solid #e2e8f0;
         }
@@ -484,22 +504,14 @@
             font-weight: 600;
             color: #4a5568;
             background: #f7fafc;
+            font-size: 8.4pt;
         }
 
-        .skill-table th:first-child {
-            width: 12%;
-        }
-
-        .skill-table th:nth-child(2) {
-            width: 24%;
-        }
-
-        .skill-table th:nth-child(3) {
-            width: 16%;
-        }
-
-        .skill-table th:nth-child(4) {
-            width: 48%;
+        .skill-category-head {
+            width: 4.6em;
+            min-width: 4.6em;
+            max-width: 4.6em;
+            overflow: hidden;
         }
 
         .skill-table td {
@@ -510,21 +522,36 @@
             font-weight: 700;
             color: #2c5282;
             background: #f7fafc;
-            white-space: nowrap;
-            width: 1%;
+            width: 4.6em;
+            min-width: 4.6em;
+            max-width: 4.6em;
+            overflow: hidden;
+            vertical-align: middle;
+        }
+
+        .skill-category-text {
+            display: block;
+            width: 100%;
+            white-space: normal;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+            line-height: 1.1;
         }
 
         .skill-name {
             font-weight: 600;
+            line-height: 1.15;
         }
 
         .skill-experience {
             color: #666;
             white-space: nowrap;
+            line-height: 1.15;
         }
 
         .skill-description {
             color: #4a5568;
+            line-height: 1.15;
         }
 
         /* Certifications section */
@@ -914,9 +941,15 @@
             <section class="skills-section{% if settings.skills_on_new_page %} page-break-before{% endif %}">
                 <h2>スキル</h2>
                 <table class="skill-table">
+                    <colgroup>
+                        <col class="skill-category-col">
+                        <col class="skill-name-col">
+                        <col class="skill-experience-col">
+                        <col class="skill-description-col">
+                    </colgroup>
                     <thead>
                         <tr>
-                            <th>分類</th>
+                            <th class="skill-category-head" style="width: 4.6em; min-width: 4.6em; max-width: 4.6em;">分類</th>
                             <th>スキル</th>
                             <th>経験</th>
                             <th>備考</th>
@@ -927,7 +960,9 @@
                         {% for skill in skills_by_category[category] %}
                         <tr>
                             {% if loop.first %}
-                            <td class="skill-category-cell" rowspan="{{ skills_by_category[category] | length }}">{{ category }}</td>
+                            <td class="skill-category-cell" rowspan="{{ skills_by_category[category] | length }}" style="width: 4.6em; min-width: 4.6em; max-width: 4.6em;">
+                                <span class="skill-category-text">{{ category }}</span>
+                            </td>
                             {% endif %}
                             <td class="skill-name">{{ skill.name }}</td>
                             <td class="skill-experience">{{ skill.experience if skill.experience else '-' }}</td>

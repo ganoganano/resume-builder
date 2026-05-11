@@ -73,6 +73,9 @@ export type ResumeBackup = {
 };
 
 const DEMO_STORAGE_KEY = "resume-demo-data-v1";
+const DEMO_STORAGE_SOURCE_KEY = "resume-demo-data-source-v1";
+const DEMO_SOURCE_EXAMPLE = "example";
+const DEMO_SOURCE_USER = "user";
 
 const defaultProfile: Profile = {
   id: 1,
@@ -157,25 +160,42 @@ function serializeBackup(data: ResumeBackup): string {
   return JSON.stringify(normalizeBackup(data));
 }
 
+function readDemoDataSource(): string | null {
+  if (!isBrowser()) return null;
+  return window.localStorage.getItem(DEMO_STORAGE_SOURCE_KEY);
+}
+
+function writeDemoDataSource(source: string): void {
+  if (!isBrowser()) return;
+  window.localStorage.setItem(DEMO_STORAGE_SOURCE_KEY, source);
+}
+
 function readDemoData(): ResumeBackup {
   if (!isBrowser()) return createDefaultBackup();
   const raw = window.localStorage.getItem(DEMO_STORAGE_KEY);
-  if (!raw) return clone(DEMO_EXAMPLE_BACKUP);
+  if (!raw) {
+    const seeded = clone(DEMO_EXAMPLE_BACKUP);
+    writeDemoData(seeded, DEMO_SOURCE_EXAMPLE);
+    return seeded;
+  }
   try {
     return normalizeBackup(JSON.parse(raw));
   } catch {
-    return clone(DEMO_EXAMPLE_BACKUP);
+    const seeded = clone(DEMO_EXAMPLE_BACKUP);
+    writeDemoData(seeded, DEMO_SOURCE_EXAMPLE);
+    return seeded;
   }
 }
 
-function writeDemoData(data: ResumeBackup): void {
+function writeDemoData(data: ResumeBackup, source = DEMO_SOURCE_USER): void {
   if (!isBrowser()) return;
   window.localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(data));
+  writeDemoDataSource(source);
 }
 
 function updateDemoData(mutator: (current: ResumeBackup) => ResumeBackup): ResumeBackup {
   const next = mutator(readDemoData());
-  writeDemoData(next);
+  writeDemoData(next, DEMO_SOURCE_USER);
   return clone(next);
 }
 
@@ -506,7 +526,7 @@ export async function importBackup(data: unknown): Promise<{ message: string }> 
       body: JSON.stringify(data),
     });
   }
-  writeDemoData(normalizeBackup(data));
+  writeDemoData(normalizeBackup(data), DEMO_SOURCE_USER);
   return { message: "Backup imported successfully" };
 }
 
@@ -517,10 +537,11 @@ export async function fetchResumeBackup(): Promise<ResumeBackup> {
 }
 
 export function isExampleResumeBackup(data: ResumeBackup): boolean {
+  if (readDemoDataSource() === DEMO_SOURCE_EXAMPLE) return true;
   return serializeBackup(data) === serializeBackup(DEMO_EXAMPLE_BACKUP);
 }
 
 export async function clearDemoData(): Promise<void> {
   if (!IS_DEMO_MODE) return;
-  writeDemoData(createDefaultBackup());
+  writeDemoData(createDefaultBackup(), DEMO_SOURCE_USER);
 }
