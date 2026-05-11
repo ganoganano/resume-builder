@@ -44,6 +44,7 @@ export type Project = {
 export type Skill = {
   id: number;
   category: string;
+  category_sort_order?: number;
   sort_order: number;
   name: string;
   experience?: string | null;
@@ -407,7 +408,11 @@ export async function reorderProjects(orderedIds: number[]): Promise<{ message: 
 export async function fetchSkills(): Promise<SkillsByCategory[]> {
   if (!IS_DEMO_MODE) return get<SkillsByCategory[]>("/skills");
   const skills = clone(readDemoData().skills).sort(
-    (a, b) => a.category.localeCompare(b.category) || a.sort_order - b.sort_order || a.id - b.id
+    (a, b) =>
+      (a.category_sort_order ?? 0) - (b.category_sort_order ?? 0) ||
+      a.category.localeCompare(b.category) ||
+      a.sort_order - b.sort_order ||
+      a.id - b.id
   );
   const categoryMap = new Map<string, Skill[]>();
   for (const skill of skills) {
@@ -424,6 +429,9 @@ export async function createSkill(data: Partial<Skill>): Promise<Skill> {
     const skill: Skill = {
       id: nextId(current.skills),
       category: data.category ?? "",
+      category_sort_order:
+        current.skills.find((skill) => skill.category === data.category)?.category_sort_order ??
+        [...new Set(current.skills.map((skill) => skill.category_sort_order ?? 0))].length,
       sort_order: siblings.length,
       name: data.name ?? "",
       experience: data.experience ?? null,
@@ -436,10 +444,32 @@ export async function createSkill(data: Partial<Skill>): Promise<Skill> {
 
 export async function updateSkill(id: number, data: Partial<Skill>): Promise<Skill> {
   if (!IS_DEMO_MODE) return put<Skill>(`/skills/${id}`, data);
-  const next = updateDemoData((current) => ({
-    ...current,
-    skills: current.skills.map((skill) => (skill.id === id ? { ...skill, ...data, id } : skill)),
-  }));
+  const next = updateDemoData((current) => {
+    const targetCategory = data.category;
+    const existingCategorySortOrder =
+      targetCategory !== undefined
+        ? current.skills.find((skill) => skill.category === targetCategory && skill.id !== id)?.category_sort_order
+        : undefined;
+    const nextCategorySortOrder =
+      existingCategorySortOrder ??
+      [...new Set(current.skills.map((skill) => skill.category_sort_order ?? 0))].length;
+    return {
+      ...current,
+      skills: current.skills.map((skill) =>
+        skill.id === id
+          ? {
+              ...skill,
+              ...data,
+              id,
+              category_sort_order:
+                targetCategory !== undefined && targetCategory !== skill.category
+                  ? nextCategorySortOrder
+                  : skill.category_sort_order,
+            }
+          : skill
+      ),
+    };
+  });
   const updated = next.skills.find((skill) => skill.id === id);
   if (!updated) throw new Error("Not found");
   return updated;
@@ -463,6 +493,20 @@ export async function reorderSkills(orderedIds: number[]): Promise<{ message: st
     }),
   }));
   return { message: "Skills reordered successfully" };
+}
+
+export async function reorderSkillCategories(orderedCategories: string[]): Promise<{ message: string }> {
+  if (!IS_DEMO_MODE) {
+    return put<{ message: string }>("/skills/categories/reorder", { categories: orderedCategories });
+  }
+  updateDemoData((current) => ({
+    ...current,
+    skills: current.skills.map((skill) => {
+      const index = orderedCategories.indexOf(skill.category);
+      return index >= 0 ? { ...skill, category_sort_order: index } : skill;
+    }),
+  }));
+  return { message: "Skill categories reordered successfully" };
 }
 
 export async function fetchCertifications(): Promise<Certification[]> {

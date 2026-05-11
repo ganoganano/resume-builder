@@ -177,6 +177,7 @@ class Skill(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     category: Mapped[str] = mapped_column(String(100), nullable=False, default="")
+    category_sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     experience: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)  # e.g., "4年"

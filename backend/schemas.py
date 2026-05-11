@@ -260,6 +260,11 @@ class SkillsReorder(BaseModel):
     ids: List[int]
 
 
+class SkillCategoriesReorder(BaseModel):
+    """Schema for reordering skill categories."""
+    categories: List[str]
+
+
 class SkillsByCategory(BaseModel):
     """Schema for skills grouped by category."""
     category: str

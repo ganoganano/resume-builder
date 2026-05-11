@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createSkill, deleteSkill, fetchSkills, reorderSkills, SkillsByCategory, updateSkill } from "@/lib/api";
+import { createSkill, deleteSkill, fetchSkills, reorderSkillCategories, reorderSkills, SkillsByCategory, updateSkill } from "@/lib/api";
 
 type SkillDraft = {
   category: string;
@@ -63,6 +63,23 @@ export default function SkillsPage() {
       await load();
     } catch (e) {
       alert(e instanceof Error ? e.message : "並び替えに失敗しました");
+      await load();
+    }
+  };
+
+  const moveCategory = async (index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= groups.length) return;
+
+    const nextGroups = [...groups];
+    [nextGroups[index], nextGroups[targetIndex]] = [nextGroups[targetIndex], nextGroups[index]];
+    setGroups(nextGroups);
+
+    try {
+      await reorderSkillCategories(nextGroups.map((group) => group.category));
+      await load();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "分類の並び替えに失敗しました");
       await load();
     }
   };
@@ -166,9 +183,15 @@ export default function SkillsPage() {
 
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">スキル一覧</h3>
-        {groups.map((group) => (
+        {groups.map((group, groupIndex) => (
           <div key={group.category} className="card">
-            <h3 className="font-semibold mb-3">{group.category}</h3>
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h3 className="font-semibold">{group.category}</h3>
+              <div className="flex gap-2 whitespace-nowrap">
+                <button className={actionButtonClass} onClick={() => moveCategory(groupIndex, -1)} disabled={groupIndex === 0}>分類↑</button>
+                <button className={actionButtonClass} onClick={() => moveCategory(groupIndex, 1)} disabled={groupIndex === groups.length - 1}>分類↓</button>
+              </div>
+            </div>
             {group.skills.length === 0 ? <p className="text-sm text-slate-500">スキルなし</p> : null}
             {group.skills.length > 0 ? (
               <div className="overflow-x-auto">

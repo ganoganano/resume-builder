@@ -186,7 +186,12 @@ def get_resume_data(db: Session) -> Dict[str, Any]:
     
     # Get skills and organize by category, sorted by category and sort_order
     skills_by_category: Dict[str, List[Dict[str, Any]]] = {}
-    skills = db.query(Skill).order_by(Skill.category.asc(), Skill.sort_order.asc(), Skill.id.asc()).all()
+    skills = db.query(Skill).order_by(
+        Skill.category_sort_order.asc(),
+        Skill.category.asc(),
+        Skill.sort_order.asc(),
+        Skill.id.asc(),
+    ).all()
 
     for skill in skills:
         category = (skill.category or "").strip()

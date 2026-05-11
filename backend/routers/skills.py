@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Skill
 from schemas import (
+    SkillCategoriesReorder,
     SkillCreate,
     SkillResponse,
     SkillUpdate,
@@ -21,6 +22,34 @@ from schemas import (
 )
 
 router = APIRouter(prefix="/api/v1", tags=["skills"])
+
+
+def normalize_skill_category_order(db: Session) -> None:
+    skills = (
+        db.query(Skill)
+        .filter(Skill.category.is_not(None))
+        .filter(Skill.name.is_not(None))
+        .order_by(Skill.category_sort_order.asc(), Skill.category.asc(), Skill.sort_order.asc(), Skill.id.asc())
+        .all()
+    )
+
+    category_order: dict[str, int] = {}
+    next_category_order = 0
+    sort_order_by_category: dict[str, int] = {}
+    for skill in skills:
+        category = (skill.category or "").strip()
+        name = (skill.name or "").strip()
+        if not category or not name:
+            continue
+        if category not in category_order:
+            category_order[category] = next_category_order
+            next_category_order += 1
+        if skill.category_sort_order != category_order[category]:
+            skill.category_sort_order = category_order[category]
+        next_sort_order = sort_order_by_category.get(category, 0)
+        if skill.sort_order != next_sort_order:
+            skill.sort_order = next_sort_order
+        sort_order_by_category[category] = next_sort_order + 1
 
 
 @router.get("/skills", response_model=List[SkillsByCategory])
@@ -36,7 +65,7 @@ def get_skills(db: Session = Depends(get_db)) -> List[SkillsByCategory]:
         db.query(Skill)
         .filter(Skill.category.is_not(None))
         .filter(Skill.name.is_not(None))
-        .order_by(Skill.category.asc(), Skill.sort_order.asc(), Skill.id.asc())
+        .order_by(Skill.category_sort_order.asc(), Skill.category.asc(), Skill.sort_order.asc(), Skill.id.asc())
         .all()
     )
     
@@ -78,6 +107,13 @@ def create_skill(
     Automatically assigns the next available sort_order at the end of the category.
     """
     # Get the maximum sort_order for the specified category
+    existing_category = db.query(Skill).filter(Skill.category == skill_data.category).order_by(Skill.id.asc()).first()
+    if existing_category is None:
+        max_category_sort_order_result = db.query(Skill.category_sort_order).order_by(Skill.category_sort_order.desc()).first()
+        category_sort_order = (max_category_sort_order_result[0] + 1) if max_category_sort_order_result is not None else 0
+    else:
+        category_sort_order = existing_category.category_sort_order
+
     max_sort_order_result = db.query(Skill.sort_order).filter(
         Skill.category == skill_data.category
     ).order_by(Skill.sort_order.desc()).first()
@@ -89,6 +125,7 @@ def create_skill(
     # Create new skill record
     new_skill = Skill(
         category=skill_data.category,
+        category_sort_order=category_sort_order,
         sort_order=next_sort_order,
         name=skill_data.name,
         experience=skill_data.experience,
@@ -96,6 +133,8 @@ def create_skill(
     )
     
     db.add(new_skill)
+    db.commit()
+    normalize_skill_category_order(db)
     db.commit()
     db.refresh(new_skill)
     
@@ -142,8 +181,40 @@ def reorder_skills(
         )
     
     db.commit()
+    normalize_skill_category_order(db)
+    db.commit()
     
     return {"message": "Skills reordered successfully"}
+
+
+@router.put("/skills/categories/reorder")
+def reorder_skill_categories(
+    reorder_data: SkillCategoriesReorder,
+    db: Session = Depends(get_db)
+) -> dict:
+    skills = db.query(Skill).filter(Skill.category.is_not(None)).filter(Skill.name.is_not(None)).all()
+    existing_categories = {
+        (skill.category or "").strip()
+        for skill in skills
+        if (skill.category or "").strip() and (skill.name or "").strip()
+    }
+    requested_categories = [category.strip() for category in reorder_data.categories if category.strip()]
+
+    if set(requested_categories) != existing_categories:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Category list must contain every existing category exactly once",
+        )
+
+    for index, category in enumerate(requested_categories):
+        db.query(Skill).filter(Skill.category == category).update(
+            {"category_sort_order": index},
+            synchronize_session=False,
+        )
+
+    normalize_skill_category_order(db)
+    db.commit()
+    return {"message": "Skill categories reordered successfully"}
 
 
 @router.put("/skills/{skill_id}", response_model=SkillResponse)
@@ -179,12 +250,24 @@ def update_skill(
         skill.description = skill_data.description
     
     if skill_data.category is not None and skill.category != original_category:
+        category_anchor = db.query(Skill).filter(
+            Skill.category == skill.category,
+            Skill.id != skill.id,
+        ).order_by(Skill.id.asc()).first()
+        if category_anchor is None:
+            max_category_sort_order_result = db.query(Skill.category_sort_order).order_by(Skill.category_sort_order.desc()).first()
+            skill.category_sort_order = (max_category_sort_order_result[0] + 1) if max_category_sort_order_result is not None else 0
+        else:
+            skill.category_sort_order = category_anchor.category_sort_order
+
         max_sort_order_result = db.query(Skill.sort_order).filter(
             Skill.category == skill.category,
             Skill.id != skill.id,
         ).order_by(Skill.sort_order.desc()).first()
         skill.sort_order = (max_sort_order_result[0] + 1) if max_sort_order_result is not None else 0
 
+    db.commit()
+    normalize_skill_category_order(db)
     db.commit()
     db.refresh(skill)
     
@@ -212,6 +295,8 @@ def delete_skill(
     
     # Delete the skill
     db.delete(skill)
+    db.commit()
+    normalize_skill_category_order(db)
     db.commit()
     
     return None

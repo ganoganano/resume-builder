@@ -105,7 +105,12 @@ def cleanup_invalid_skills() -> None:
     """
     db = SessionLocal()
     try:
-        skills = db.query(Skill).order_by(Skill.category.asc(), Skill.sort_order.asc(), Skill.id.asc()).all()
+        skills = db.query(Skill).order_by(
+            Skill.category_sort_order.asc(),
+            Skill.category.asc(),
+            Skill.sort_order.asc(),
+            Skill.id.asc(),
+        ).all()
 
         valid_skills: list[Skill] = []
         invalid_skills: list[Skill] = []
@@ -131,8 +136,15 @@ def cleanup_invalid_skills() -> None:
             db.delete(skill)
 
         sort_index_by_category: dict[str, int] = {}
+        category_order: dict[str, int] = {}
+        next_category_order = 0
         for skill in valid_skills:
             category = skill.category
+            if category not in category_order:
+                category_order[category] = next_category_order
+                next_category_order += 1
+            if skill.category_sort_order != category_order[category]:
+                skill.category_sort_order = category_order[category]
             next_sort_order = sort_index_by_category.get(category, 0)
             if skill.sort_order != next_sort_order:
                 skill.sort_order = next_sort_order
@@ -178,6 +190,17 @@ def ensure_resume_settings_columns() -> None:
             )
 
 
+def ensure_skill_category_sort_order_column() -> None:
+    """
+    Add skills.category_sort_order for existing SQLite databases when missing.
+    """
+    with engine.begin() as connection:
+        columns = connection.execute(text("PRAGMA table_info(skills)")).fetchall()
+        column_names = {column[1] for column in columns}
+        if "category_sort_order" not in column_names:
+            connection.execute(text("ALTER TABLE skills ADD COLUMN category_sort_order INTEGER NOT NULL DEFAULT 0"))
+
+
 def normalize_certifications_order() -> None:
     """
     Initialize and compact certification sort_order values.
@@ -220,6 +243,7 @@ def setup_database() -> None:
     """
     init_db()
     ensure_resume_settings_columns()
+    ensure_skill_category_sort_order_column()
     ensure_certification_sort_order_column()
     create_default_profile()
     create_default_settings()
