@@ -65,6 +65,11 @@ class ResumeSettings(Base):
         nullable=False,
         default='["self_pr","employment","skills","certifications"]',
     )
+    section_page_breaks: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        default='{"self_pr": false, "employment": false, "skills": false, "certifications": false}',
+    )
 
     def __repr__(self) -> str:
         return f"<ResumeSettings(id={self.id})>"

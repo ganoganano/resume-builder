@@ -24,6 +24,7 @@ def get_or_create_settings(db: Session) -> ResumeSettings:
             allow_section_split=False,
             font_scale=1.0,
             section_order='["self_pr","employment","skills","certifications"]',
+            section_page_breaks='{"self_pr": false, "employment": false, "skills": false, "certifications": false}',
         )
         db.add(settings)
         db.commit()
@@ -39,6 +40,10 @@ def to_response(settings: ResumeSettings) -> ResumeSettingsResponse:
         allow_section_split=settings.allow_section_split,
         font_scale=settings.font_scale,
         section_order=json.loads(settings.section_order or '["self_pr","employment","skills","certifications"]'),
+        section_page_breaks=json.loads(
+            settings.section_page_breaks
+            or '{"self_pr": false, "employment": false, "skills": false, "certifications": false}'
+        ),
     )
 
 
@@ -58,6 +63,7 @@ def update_settings(
     settings.allow_section_split = settings_input.allow_section_split
     settings.font_scale = settings_input.font_scale
     settings.section_order = json.dumps(settings_input.section_order, ensure_ascii=False)
+    settings.section_page_breaks = json.dumps(settings_input.section_page_breaks, ensure_ascii=False)
     db.commit()
     db.refresh(settings)
     return to_response(settings)

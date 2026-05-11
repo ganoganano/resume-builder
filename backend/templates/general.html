@@ -616,7 +616,7 @@
 
         {% for section_key in settings.section_order %}
             {% if section_key == "self_pr" and self_pr_html %}
-            <section class="self-pr">
+            <section class="self-pr{% if settings.section_page_breaks[section_key] %} page-break-before{% endif %}">
                 <div class="self-pr-heading">自己PR</div>
                 <div class="self-pr-body">
                     <div class="self-pr-markdown">{{ self_pr_html | safe }}</div>
@@ -625,7 +625,7 @@
             {% endif %}
 
             {% if section_key == "employment" %}
-            <section>
+            <section{% if settings.section_page_breaks[section_key] %} class="page-break-before"{% endif %}>
                 {% for employment in employments %}
                 <div class="employment-section">
                     {% if loop.first %}
@@ -938,7 +938,7 @@
             {% endif %}
 
             {% if section_key == "skills" and skills_by_category %}
-            <section class="skills-section{% if settings.skills_on_new_page %} page-break-before{% endif %}">
+            <section class="skills-section{% if settings.skills_on_new_page or settings.section_page_breaks[section_key] %} page-break-before{% endif %}">
                 <h2>スキル</h2>
                 <table class="skill-table">
                     <colgroup>
@@ -976,7 +976,7 @@
             {% endif %}
 
             {% if section_key == "certifications" and certifications %}
-            <section{% if settings.certifications_on_new_page %} class="page-break-before"{% endif %}>
+            <section{% if settings.certifications_on_new_page or settings.section_page_breaks[section_key] %} class="page-break-before"{% endif %}>
                 <h2>資格</h2>
                 <table class="certifications-table">
                     <thead>

@@ -324,6 +324,7 @@ class ResumeSettingsBase(BaseModel):
     allow_section_split: bool = False
     font_scale: float = 1.0
     section_order: List[str] = Field(default_factory=lambda: list(SECTION_KEYS))
+    section_page_breaks: dict[str, bool] = Field(default_factory=lambda: {key: False for key in SECTION_KEYS})
 
     @field_validator('section_order')
     @classmethod
@@ -331,6 +332,15 @@ class ResumeSettingsBase(BaseModel):
         if sorted(v) != sorted(SECTION_KEYS):
             raise ValueError(f'section_order must contain exactly: {", ".join(SECTION_KEYS)}')
         return v
+
+    @field_validator("section_page_breaks")
+    @classmethod
+    def validate_section_page_breaks(cls, v: dict[str, bool]) -> dict[str, bool]:
+        normalized = {key: bool(v.get(key, False)) for key in SECTION_KEYS}
+        extra_keys = set(v.keys()) - set(SECTION_KEYS)
+        if extra_keys:
+            raise ValueError(f'section_page_breaks contains unknown keys: {", ".join(sorted(extra_keys))}')
+        return normalized
 
     @field_validator('font_scale')
     @classmethod

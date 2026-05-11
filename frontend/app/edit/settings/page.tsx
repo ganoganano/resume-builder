@@ -9,6 +9,12 @@ const defaultSettings: ResumeSettings = {
   allow_section_split: false,
   font_scale: 1.0,
   section_order: ["self_pr", "employment", "skills", "certifications"],
+  section_page_breaks: {
+    self_pr: false,
+    employment: false,
+    skills: false,
+    certifications: false,
+  },
 };
 
 const sectionLabels: Record<ResumeSettings["section_order"][number], string> = {
@@ -142,7 +148,22 @@ export default function SettingsPage() {
           <div className="rounded border divide-y">
             {form.section_order.map((sectionKey, index) => (
               <div key={sectionKey} className="flex items-center justify-between px-4 py-3 bg-white">
-                <span className="font-medium">{sectionLabels[sectionKey]}</span>
+                <div className="space-y-2">
+                  <span className="font-medium">{sectionLabels[sectionKey]}</span>
+                  <label className="flex items-center gap-2 text-sm text-slate-600">
+                    <input
+                      type="checkbox"
+                      checked={form.section_page_breaks[sectionKey]}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          section_page_breaks: { ...form.section_page_breaks, [sectionKey]: e.target.checked },
+                        })
+                      }
+                    />
+                    新しいページから開始
+                  </label>
+                </div>
                 <div className="flex gap-2 whitespace-nowrap">
                   <button
                     type="button"

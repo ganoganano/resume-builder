@@ -60,6 +60,7 @@ export type ResumeSettings = {
   allow_section_split: boolean;
   font_scale: number;
   section_order: ResumeSectionKey[];
+  section_page_breaks: Record<ResumeSectionKey, boolean>;
 };
 
 export type ResumeBackup = {
@@ -92,6 +93,12 @@ const defaultSettings: ResumeSettings = {
   allow_section_split: false,
   font_scale: 1.0,
   section_order: ["self_pr", "employment", "skills", "certifications"],
+  section_page_breaks: {
+    self_pr: false,
+    employment: false,
+    skills: false,
+    certifications: false,
+  },
 };
 
 const DEMO_EXAMPLE_BACKUP = normalizeBackup(exampleData);
@@ -128,6 +135,18 @@ function normalizeSectionOrder(value: unknown): ResumeSectionKey[] {
   return keys;
 }
 
+function normalizeSectionPageBreaks(value: unknown): Record<ResumeSectionKey, boolean> {
+  const fallback = defaultSettings.section_page_breaks;
+  if (!value || typeof value !== "object") return { ...fallback };
+  const data = value as Partial<Record<ResumeSectionKey, unknown>>;
+  return {
+    self_pr: Boolean(data.self_pr),
+    employment: Boolean(data.employment),
+    skills: Boolean(data.skills),
+    certifications: Boolean(data.certifications),
+  };
+}
+
 function normalizeBackup(input: unknown): ResumeBackup {
   const fallback = createDefaultBackup();
   if (!input || typeof input !== "object") return fallback;
@@ -148,6 +167,7 @@ function normalizeBackup(input: unknown): ResumeBackup {
       allow_section_split: Boolean(data.settings?.allow_section_split),
       font_scale: typeof data.settings?.font_scale === "number" ? data.settings.font_scale : 1.0,
       section_order: normalizeSectionOrder(data.settings?.section_order),
+      section_page_breaks: normalizeSectionPageBreaks(data.settings?.section_page_breaks),
     },
     employments: Array.isArray(data.employments) ? data.employments : [],
     projects: Array.isArray(data.projects) ? data.projects : [],
@@ -506,7 +526,13 @@ export async function updateSettings(data: ResumeSettings): Promise<ResumeSettin
   if (!IS_DEMO_MODE) return put<ResumeSettings>("/settings", data);
   return updateDemoData((current) => ({
     ...current,
-    settings: { ...current.settings, ...data, id: 1, section_order: normalizeSectionOrder(data.section_order) },
+    settings: {
+      ...current.settings,
+      ...data,
+      id: 1,
+      section_order: normalizeSectionOrder(data.section_order),
+      section_page_breaks: normalizeSectionPageBreaks(data.section_page_breaks),
+    },
   })).settings;
 }
 

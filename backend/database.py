@@ -84,6 +84,7 @@ def create_default_settings() -> None:
                     allow_section_split=False,
                     font_scale=1.0,
                     section_order='["self_pr","employment","skills","certifications"]',
+                    section_page_breaks='{"self_pr": false, "employment": false, "skills": false, "certifications": false}',
                 )
             )
             db.commit()
@@ -167,6 +168,14 @@ def ensure_resume_settings_columns() -> None:
             connection.execute(text("ALTER TABLE resume_settings ADD COLUMN allow_section_split INTEGER NOT NULL DEFAULT 0"))
         if "font_scale" not in column_names:
             connection.execute(text("ALTER TABLE resume_settings ADD COLUMN font_scale REAL NOT NULL DEFAULT 1.0"))
+        if "section_page_breaks" not in column_names:
+            connection.execute(
+                text(
+                    """ALTER TABLE resume_settings
+                    ADD COLUMN section_page_breaks TEXT NOT NULL
+                    DEFAULT '{"self_pr": false, "employment": false, "skills": false, "certifications": false}'"""
+                )
+            )
 
 
 def normalize_certifications_order() -> None:

@@ -84,6 +84,19 @@ def parse_section_order(value: Optional[str]) -> List[str]:
     return parsed if sorted(parsed) == sorted(default_order) else default_order
 
 
+def parse_section_page_breaks(value: Optional[str]) -> Dict[str, bool]:
+    default_breaks = {key: False for key in SECTION_KEYS}
+    if value is None or value == "":
+        return default_breaks
+    try:
+        parsed = json.loads(value)
+    except (json.JSONDecodeError, TypeError):
+        return default_breaks
+    if not isinstance(parsed, dict):
+        return default_breaks
+    return {key: bool(parsed.get(key, False)) for key in SECTION_KEYS}
+
+
 def get_resume_data(db: Session) -> Dict[str, Any]:
     """
     Gather all resume data from the database for template rendering.
@@ -127,6 +140,7 @@ def get_resume_data(db: Session) -> Dict[str, Any]:
             allow_section_split=False,
             font_scale=1.0,
             section_order='["self_pr","employment","skills","certifications"]',
+            section_page_breaks='{"self_pr": false, "employment": false, "skills": false, "certifications": false}',
         )
         db.add(settings)
         db.commit()
@@ -229,6 +243,7 @@ def get_resume_data(db: Session) -> Dict[str, Any]:
             'allow_section_split': settings.allow_section_split,
             'font_scale': settings.font_scale,
             'section_order': section_order,
+            'section_page_breaks': parse_section_page_breaks(getattr(settings, "section_page_breaks", None)),
         },
         'employments': employments,
         'projects_by_employment': projects_by_employment,
@@ -306,3 +321,4 @@ def generate_resume_pdf(context: Dict[str, Any]) -> bytes:
     pdf_bytes = html.write_pdf(stylesheets=[font_css])
     
     return pdf_bytes
+SECTION_KEYS = ("self_pr", "employment", "skills", "certifications")
