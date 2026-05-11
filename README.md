@@ -71,7 +71,7 @@ resume-builder/
 起動:
 
 ```bash
-docker compose up --build
+docker compose --profile prod up --build
 ```
 
 - フロントエンド: `http://localhost:3000`
@@ -81,13 +81,13 @@ docker compose up --build
 停止:
 
 ```bash
-docker compose down
+docker compose --profile prod down
 ```
 
 データ削除:
 
 ```bash
-docker compose down -v
+docker compose --profile prod down -v
 ```
 
 ### 開発モード
