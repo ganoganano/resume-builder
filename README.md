@@ -105,6 +105,7 @@ NEXT_PUBLIC_DEMO_MODE=true npm run dev
 設定値:
 
 - Root Directory: `resume-builder/frontend`
+- Root Directory: `frontend`
 - Framework Preset: `Next.js`
 - Environment Variable: `NEXT_PUBLIC_DEMO_MODE=true`
 
@@ -129,8 +130,8 @@ NEXT_PUBLIC_DEMO_MODE=true npm run dev
 | 変数名 | 説明 |
 |---|---|
 | `NEXT_PUBLIC_DEMO_MODE` | `true` のときデモモードで動作 |
-| `NEXT_PUBLIC_API_URL` | 通常モード時のバックエンド URL |
-| `INTERNAL_API_URL` | Next.js サーバーがバックエンドへ接続する内部 URL |
+| `NEXT_PUBLIC_API_URL` | ブラウザから直接参照する外部バックエンド URL。通常の Docker Compose 起動では不要 |
+| `INTERNAL_API_URL` | Next.js サーバーがバックエンドへ接続する内部 URL。Docker Compose では `http://backend:8000` |
 
 ### バックエンド
 
