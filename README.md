@@ -1,8 +1,11 @@
 # 職務経歴書管理システム
 
-職務経歴書を作成、管理するためのシステムです。
-HTML プレビューと PDF 出力を行うことができます。
-通常モードでは `FastAPI + SQLite + Next.js` で動作し、デモモードでは `Next.js` 単体で動作します。
+- 職務経歴書のアップデートや変換を容易にするためのシステムです
+- 下記の様な課題を解決します
+  - スプレッドシートやPDFでは編集にかかる手間
+  - スプレッドシートやPDFではAIが正確に読み込みづらい
+  - ドキュメントの見た目の調整の手間
+  - 各転職サイト等のフォーマットに変換する手間
 
 <p align="center">
   <a href="https://resume-builder-kappa-sooty.vercel.app/preview" target="_blank" rel="noopener noreferrer">
@@ -12,11 +15,23 @@ HTML プレビューと PDF 出力を行うことができます。
 
 ## 機能
 
-- プロフィール、自己PR、在籍履歴、プロジェクト、スキル、資格の編集 の管理
+- 職務経歴書を構成する要素の編集
+  - プロフィール
+  - 自己PR
+  - 在籍履歴
+  - プロジェクト
+  - スキル
+  - 資格
 - プレビュー表示
-- PDF 出力
-- JSON バックアップのインポート / エクスポート
+- PDF出力
+- JSON形式でのインポート / エクスポート
 - セクション順やページ分割の設定
+
+### Todo
+
+- [ ] バックエンドにMCPサーバーを実装
+- [ ] 各転職サイトなどに合わせたテンプレート機能
+- [ ] gemini APIへのリクエスト機能
 
 ## ディレクトリ構成
 
@@ -24,7 +39,7 @@ HTML プレビューと PDF 出力を行うことができます。
 resume-builder/
   backend/      FastAPI + SQLite
   frontend/     Next.js
-  start.sh      ローカルでの起動スクリプト
+  docker-compose.yml
   example.json  サンプル用jsonデータ
 ```
 
@@ -40,26 +55,18 @@ resume-builder/
 `Next.js` 単体で動作します。  
 データはサーバーに保存されず、ブラウザの `localStorage` にのみ保存されます。
 
-特性:
+- デモモードの特性
+  - バックエンド不要
+  - Vercel にそのまま公開可能
+  - 個人情報がサーバーに残らない
+  - データはブラウザごとに分離される
+  - ブラウザのシークレットモードやlocal storage削除で情報が消える
 
-- バックエンド不要
-- Vercel にそのまま公開可能
-- 個人情報がサーバーに残らない
-- データはブラウザごとに分離される
-- シークレットモードやストレージ削除で消える
-
-## ローカル起動
+## 起動方法
 
 ### 通常モード
 
-```bash
-cd resume-builder
-./start.sh
-```
-
-フロントエンドとバックエンドが同時に起動します。
-
-### Docker Compose
+起動:
 
 ```bash
 docker compose up --build
@@ -75,7 +82,7 @@ docker compose up --build
 docker compose down
 ```
 
-データも消す:
+データ削除:
 
 ```bash
 docker compose down -v
@@ -104,7 +111,8 @@ NEXT_PUBLIC_DEMO_MODE=true npm run dev
 注意:
 
 - `NEXT_PUBLIC_API_URL` は設定しません
-- PDF はサーバー生成ではなく、ブラウザの印刷ダイアログ経由で出力します
+- PDFはブラウザの印刷ダイアログ経由で出力します
+  - 見た目が崩れる可能性があります
 
 ## バックアップ
 
@@ -133,5 +141,5 @@ NEXT_PUBLIC_DEMO_MODE=true npm run dev
 
 ## 備考
 
-- デモモードの PDF 出力はブラウザ依存です
-- プレビューと PDF の見た目は可能な限り揃えていますが、完全一致は保証しません
+- デモモードのPDF出力はブラウザ依存です
+- プレビューとPDFの見た目は可能な限り揃えていますが、完全一致は保証しません
