@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+const publicApiUrl = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
+const internalApiUrl = (process.env.INTERNAL_API_URL || "").replace(/\/$/, "");
 
 const nextConfig: NextConfig = {
   async rewrites() {
@@ -9,7 +10,8 @@ const nextConfig: NextConfig = {
       return [];
     }
 
-    const apiBase = apiUrl || "http://localhost:8000";
+    // Prefer the container-internal backend address for server-side proxying.
+    const apiBase = internalApiUrl || publicApiUrl || "http://localhost:8000";
     return [
       {
         source: "/api/v1/:path*",

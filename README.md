@@ -59,6 +59,28 @@ cd resume-builder
 
 フロントエンドとバックエンドが同時に起動します。
 
+### Docker Compose
+
+```bash
+docker compose up --build
+```
+
+- フロントエンド: `http://localhost:3000`
+- バックエンド: ホストには公開されず、Docker ネットワーク内で `frontend` からのみ接続されます
+- SQLite: Docker volume `resume_data` に保存されます
+
+停止:
+
+```bash
+docker compose down
+```
+
+データも消す:
+
+```bash
+docker compose down -v
+```
+
 ### デモモード
 
 ```bash
@@ -100,13 +122,14 @@ NEXT_PUBLIC_DEMO_MODE=true npm run dev
 |---|---|
 | `NEXT_PUBLIC_DEMO_MODE` | `true` のときデモモードで動作 |
 | `NEXT_PUBLIC_API_URL` | 通常モード時のバックエンド URL |
+| `INTERNAL_API_URL` | Next.js サーバーがバックエンドへ接続する内部 URL |
 
 ### バックエンド
 
 | 変数名 | 説明 |
 |---|---|
 | `DATABASE_URL` | SQLite などの接続先 |
-| `FRONTEND_URL` | CORS 許可するフロントエンド URL |
+| `FRONTEND_URL` | CORS 許可するブラウザ公開 URL |
 
 ## 備考
 
