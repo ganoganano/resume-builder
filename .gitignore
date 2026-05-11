@@ -5,6 +5,7 @@ __pycache__/
 .env.*
 
 backend/.venv/
+resume.db
 backend/resume.db
 
 frontend/node_modules/
