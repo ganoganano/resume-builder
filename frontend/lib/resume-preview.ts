@@ -150,7 +150,7 @@ function renderSkillRows(skills: Skill[]): string {
         .map(
           (skill, index) => `
             <tr>
-              ${index === 0 ? `<td class="skill-category-cell" rowspan="${entries.length}" style="width: 4.6em; min-width: 4.6em; max-width: 4.6em;"><span class="skill-category-text">${escapeHtml(category)}</span></td>` : ""}
+              ${index === 0 ? `<td class="skill-category-cell" rowspan="${entries.length}"><span class="skill-category-text">${escapeHtml(category)}</span></td>` : ""}
               <td class="skill-name">${escapeHtml(skill.name)}</td>
               <td class="skill-experience">${escapeHtml(skill.experience || "-")}</td>
               <td class="skill-description">${escapeHtml(skill.description || "-")}</td>
@@ -234,13 +234,13 @@ function renderSection(sectionKey: ResumeSectionKey, data: ResumeBackup): string
         <h2>スキル</h2>
         <table class="skill-table">
           <colgroup>
-            <col class="skill-category-col" style="width: 5em; min-width: 5em; max-width: 5em;" />
+            <col class="skill-category-col" />
             <col class="skill-name-col" />
             <col class="skill-experience-col" />
             <col class="skill-description-col" />
           </colgroup>
           <thead>
-            <tr><th class="skill-category-head" style="width: 4.6em; min-width: 4.6em; max-width: 4.6em;">分類</th><th>スキル</th><th>経験</th><th>備考</th></tr>
+            <tr><th class="skill-category-head">分類</th><th>スキル</th><th>経験</th><th>備考</th></tr>
           </thead>
           <tbody>${renderSkillRows(data.skills)}</tbody>
         </table>
@@ -279,7 +279,14 @@ export function buildResumePreviewHtml(data: ResumeBackup): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>職務経歴書 - ${escapeHtml(data.profile.name || "")}</title>
   <style>
-    :root { --font-scale: ${data.settings.font_scale}; }
+    :root {
+      --font-scale: ${data.settings.font_scale};
+      --project-meta-column-width: ${data.settings.project_meta_column_width_px}px;
+      --project-tech-column-width: ${data.settings.project_tech_column_width_px}px;
+      --skill-category-column-width: ${data.settings.skill_category_column_width_em}em;
+      --skill-name-column-width: ${data.settings.skill_name_column_width_pct}%;
+      --skill-experience-column-width: ${data.settings.skill_experience_column_width_pct}%;
+    }
     @page { size: A4; margin: 15mm 20mm; }
     * { box-sizing: border-box; }
     body { font-family: "Noto Sans JP", sans-serif; font-size: calc(10.5pt * var(--font-scale)); line-height: 1.42; color: #333; margin: 0; padding: 0; background: #fff; }
@@ -318,9 +325,9 @@ export function buildResumePreviewHtml(data: ResumeBackup): string {
     .project-title { font-size: calc(11pt * var(--font-scale)); font-weight: 700; color: #2c5282; margin: 0 0 6px 0; }
     .project-layout-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     .project-layout-table td { vertical-align: top; }
-    .project-meta-column { width: 88px; border-right: 1px solid #e2e8f0; padding-right: 10px; text-align: center; }
+    .project-meta-column { width: var(--project-meta-column-width); border-right: 1px solid #e2e8f0; padding-right: 10px; text-align: center; }
     .project-main-column { padding: 0 14px; }
-    .project-tech-column { width: 150px; border-left: 1px solid #e2e8f0; padding-left: 12px; }
+    .project-tech-column { width: var(--project-tech-column-width); border-left: 1px solid #e2e8f0; padding-left: 12px; }
     .project-side-heading { font-size: calc(9pt * var(--font-scale)); font-weight: 700; color: #4a5568; margin: 0 0 6px 0; letter-spacing: 0.03em; }
     .project-date-stack { display: flex; flex-direction: column; gap: 0; }
     .project-date-value { display: block; font-size: calc(9.5pt * var(--font-scale)); font-weight: 700; color: #2d3748; line-height: 1.3; text-align: center; }
@@ -341,23 +348,23 @@ export function buildResumePreviewHtml(data: ResumeBackup): string {
     .tech-tag { display: inline-block; background: #e2e8f0; color: #2d3748; border-radius: 999px; padding: 2px 8px; font-size: calc(8.5pt * var(--font-scale)); line-height: 1.3; }
     .skill-table, .certifications-table { width: 100%; border-collapse: collapse; font-size: calc(8.8pt * var(--font-scale)); }
     .skill-table { table-layout: fixed; line-height: 1.2; }
-    .skill-category-col { width: 4.6em; min-width: 4.6em; max-width: 4.6em; }
-    .skill-name-col { width: 24%; }
-    .skill-experience-col { width: 12%; }
+    .skill-category-col { width: var(--skill-category-column-width); min-width: var(--skill-category-column-width); max-width: var(--skill-category-column-width); }
+    .skill-name-col { width: var(--skill-name-column-width); }
+    .skill-experience-col { width: var(--skill-experience-column-width); }
     .skill-description-col { width: auto; }
     .skill-table th, .skill-table td, .certifications-table th, .certifications-table td { padding: 2px 3px; text-align: left; border-bottom: 1px solid #e2e8f0; }
     .skill-table th, .certifications-table th { font-weight: 600; color: #4a5568; background: #f7fafc; }
     .skill-table th { font-size: calc(8.4pt * var(--font-scale)); }
     .skill-category-head {
-      width: 4.6em !important;
-      min-width: 4.6em !important;
-      max-width: 4.6em !important;
+      width: var(--skill-category-column-width) !important;
+      min-width: var(--skill-category-column-width) !important;
+      max-width: var(--skill-category-column-width) !important;
       overflow: hidden;
     }
     .skill-category-cell {
-      width: 4.6em !important;
-      min-width: 4.6em !important;
-      max-width: 4.6em !important;
+      width: var(--skill-category-column-width) !important;
+      min-width: var(--skill-category-column-width) !important;
+      max-width: var(--skill-category-column-width) !important;
       overflow: hidden;
       font-weight: 600;
       color: #4a5568;

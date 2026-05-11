@@ -10,6 +10,11 @@
     <style>
         :root {
             --font-scale: {{ settings.font_scale }};
+            --project-meta-column-width: {{ settings.project_meta_column_width_px }}px;
+            --project-tech-column-width: {{ settings.project_tech_column_width_px }}px;
+            --skill-category-column-width: {{ settings.skill_category_column_width_em }}em;
+            --skill-name-column-width: {{ settings.skill_name_column_width_pct }}%;
+            --skill-experience-column-width: {{ settings.skill_experience_column_width_pct }}%;
         }
 
         /* Print styles */
@@ -279,7 +284,7 @@
         }
 
         .project-meta-column {
-            width: 88px;
+            width: var(--project-meta-column-width);
             border-right: 1px solid #e2e8f0;
             padding-right: 10px;
             text-align: center;
@@ -290,7 +295,7 @@
         }
 
         .project-tech-column {
-            width: 150px;
+            width: var(--project-tech-column-width);
             border-left: 1px solid #e2e8f0;
             padding-left: 12px;
         }
@@ -476,17 +481,17 @@
         }
 
         .skill-category-col {
-            width: 4.6em;
-            min-width: 4.6em;
-            max-width: 4.6em;
+            width: var(--skill-category-column-width);
+            min-width: var(--skill-category-column-width);
+            max-width: var(--skill-category-column-width);
         }
 
         .skill-name-col {
-            width: 24%;
+            width: var(--skill-name-column-width);
         }
 
         .skill-experience-col {
-            width: 12%;
+            width: var(--skill-experience-column-width);
         }
 
         .skill-description-col {
@@ -508,9 +513,9 @@
         }
 
         .skill-category-head {
-            width: 4.6em;
-            min-width: 4.6em;
-            max-width: 4.6em;
+            width: var(--skill-category-column-width);
+            min-width: var(--skill-category-column-width);
+            max-width: var(--skill-category-column-width);
             overflow: hidden;
         }
 
@@ -522,9 +527,9 @@
             font-weight: 700;
             color: #2c5282;
             background: #f7fafc;
-            width: 4.6em;
-            min-width: 4.6em;
-            max-width: 4.6em;
+            width: var(--skill-category-column-width);
+            min-width: var(--skill-category-column-width);
+            max-width: var(--skill-category-column-width);
             overflow: hidden;
             vertical-align: middle;
         }
@@ -949,7 +954,7 @@
                     </colgroup>
                     <thead>
                         <tr>
-                            <th class="skill-category-head" style="width: 4.6em; min-width: 4.6em; max-width: 4.6em;">分類</th>
+                            <th class="skill-category-head">分類</th>
                             <th>スキル</th>
                             <th>経験</th>
                             <th>備考</th>
@@ -960,7 +965,7 @@
                         {% for skill in skills_by_category[category] %}
                         <tr>
                             {% if loop.first %}
-                            <td class="skill-category-cell" rowspan="{{ skills_by_category[category] | length }}" style="width: 4.6em; min-width: 4.6em; max-width: 4.6em;">
+                            <td class="skill-category-cell" rowspan="{{ skills_by_category[category] | length }}">
                                 <span class="skill-category-text">{{ category }}</span>
                             </td>
                             {% endif %}

@@ -58,6 +58,11 @@ export type ResumeSettings = {
   id?: number;
   allow_section_split: boolean;
   font_scale: number;
+  project_meta_column_width_px: number;
+  project_tech_column_width_px: number;
+  skill_category_column_width_em: number;
+  skill_name_column_width_pct: number;
+  skill_experience_column_width_pct: number;
   section_order: ResumeSectionKey[];
   section_page_breaks: Record<ResumeSectionKey, boolean>;
 };
@@ -89,6 +94,11 @@ const defaultSettings: ResumeSettings = {
   id: 1,
   allow_section_split: false,
   font_scale: 1.0,
+  project_meta_column_width_px: 88,
+  project_tech_column_width_px: 150,
+  skill_category_column_width_em: 4.6,
+  skill_name_column_width_pct: 24,
+  skill_experience_column_width_pct: 12,
   section_order: ["self_pr", "employment", "skills", "certifications"],
   section_page_breaks: {
     self_pr: false,
@@ -161,6 +171,16 @@ function normalizeBackup(input: unknown): ResumeBackup {
       id: 1,
       allow_section_split: Boolean(data.settings?.allow_section_split),
       font_scale: typeof data.settings?.font_scale === "number" ? data.settings.font_scale : 1.0,
+      project_meta_column_width_px:
+        typeof data.settings?.project_meta_column_width_px === "number" ? data.settings.project_meta_column_width_px : 88,
+      project_tech_column_width_px:
+        typeof data.settings?.project_tech_column_width_px === "number" ? data.settings.project_tech_column_width_px : 150,
+      skill_category_column_width_em:
+        typeof data.settings?.skill_category_column_width_em === "number" ? data.settings.skill_category_column_width_em : 4.6,
+      skill_name_column_width_pct:
+        typeof data.settings?.skill_name_column_width_pct === "number" ? data.settings.skill_name_column_width_pct : 24,
+      skill_experience_column_width_pct:
+        typeof data.settings?.skill_experience_column_width_pct === "number" ? data.settings.skill_experience_column_width_pct : 12,
       section_order: normalizeSectionOrder(data.settings?.section_order),
       section_page_breaks: normalizeSectionPageBreaks(data.settings?.section_page_breaks),
     },

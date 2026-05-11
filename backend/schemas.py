@@ -326,6 +326,11 @@ class ResumeSettingsBase(BaseModel):
     """Base schema for resume layout settings."""
     allow_section_split: bool = False
     font_scale: float = 1.0
+    project_meta_column_width_px: int = 88
+    project_tech_column_width_px: int = 150
+    skill_category_column_width_em: float = 4.6
+    skill_name_column_width_pct: float = 24.0
+    skill_experience_column_width_pct: float = 12.0
     section_order: List[str] = Field(default_factory=lambda: list(SECTION_KEYS))
     section_page_breaks: dict[str, bool] = Field(default_factory=lambda: {key: False for key in SECTION_KEYS})
 
@@ -350,6 +355,41 @@ class ResumeSettingsBase(BaseModel):
     def validate_font_scale(cls, v: float) -> float:
         if v < 0.85 or v > 1.25:
             raise ValueError('font_scale must be between 0.85 and 1.25')
+        return v
+
+    @field_validator("project_meta_column_width_px")
+    @classmethod
+    def validate_project_meta_column_width_px(cls, v: int) -> int:
+        if v < 72 or v > 120:
+            raise ValueError("project_meta_column_width_px must be between 72 and 120")
+        return v
+
+    @field_validator("project_tech_column_width_px")
+    @classmethod
+    def validate_project_tech_column_width_px(cls, v: int) -> int:
+        if v < 110 or v > 200:
+            raise ValueError("project_tech_column_width_px must be between 110 and 200")
+        return v
+
+    @field_validator("skill_category_column_width_em")
+    @classmethod
+    def validate_skill_category_column_width_em(cls, v: float) -> float:
+        if v < 3.5 or v > 7.0:
+            raise ValueError("skill_category_column_width_em must be between 3.5 and 7.0")
+        return v
+
+    @field_validator("skill_name_column_width_pct")
+    @classmethod
+    def validate_skill_name_column_width_pct(cls, v: float) -> float:
+        if v < 16 or v > 40:
+            raise ValueError("skill_name_column_width_pct must be between 16 and 40")
+        return v
+
+    @field_validator("skill_experience_column_width_pct")
+    @classmethod
+    def validate_skill_experience_column_width_pct(cls, v: float) -> float:
+        if v < 8 or v > 20:
+            raise ValueError("skill_experience_column_width_pct must be between 8 and 20")
         return v
 
 

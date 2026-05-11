@@ -82,6 +82,11 @@ def create_default_settings() -> None:
                     id=1,
                     allow_section_split=False,
                     font_scale=1.0,
+                    project_meta_column_width_px=88,
+                    project_tech_column_width_px=150,
+                    skill_category_column_width_em=4.6,
+                    skill_name_column_width_pct=24.0,
+                    skill_experience_column_width_pct=12.0,
                     section_order='["self_pr","employment","skills","certifications"]',
                     section_page_breaks='{"self_pr": false, "employment": false, "skills": false, "certifications": false}',
                 )
@@ -179,6 +184,16 @@ def ensure_resume_settings_columns() -> None:
             connection.execute(text("ALTER TABLE resume_settings ADD COLUMN allow_section_split INTEGER NOT NULL DEFAULT 0"))
         if "font_scale" not in column_names:
             connection.execute(text("ALTER TABLE resume_settings ADD COLUMN font_scale REAL NOT NULL DEFAULT 1.0"))
+        if "project_meta_column_width_px" not in column_names:
+            connection.execute(text("ALTER TABLE resume_settings ADD COLUMN project_meta_column_width_px INTEGER NOT NULL DEFAULT 88"))
+        if "project_tech_column_width_px" not in column_names:
+            connection.execute(text("ALTER TABLE resume_settings ADD COLUMN project_tech_column_width_px INTEGER NOT NULL DEFAULT 150"))
+        if "skill_category_column_width_em" not in column_names:
+            connection.execute(text("ALTER TABLE resume_settings ADD COLUMN skill_category_column_width_em REAL NOT NULL DEFAULT 4.6"))
+        if "skill_name_column_width_pct" not in column_names:
+            connection.execute(text("ALTER TABLE resume_settings ADD COLUMN skill_name_column_width_pct REAL NOT NULL DEFAULT 24.0"))
+        if "skill_experience_column_width_pct" not in column_names:
+            connection.execute(text("ALTER TABLE resume_settings ADD COLUMN skill_experience_column_width_pct REAL NOT NULL DEFAULT 12.0"))
         if "section_page_breaks" not in column_names:
             connection.execute(
                 text(

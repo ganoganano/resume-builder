@@ -137,6 +137,11 @@ def get_resume_data(db: Session) -> Dict[str, Any]:
             id=1,
             allow_section_split=False,
             font_scale=1.0,
+            project_meta_column_width_px=88,
+            project_tech_column_width_px=150,
+            skill_category_column_width_em=4.6,
+            skill_name_column_width_pct=24.0,
+            skill_experience_column_width_pct=12.0,
             section_order='["self_pr","employment","skills","certifications"]',
             section_page_breaks='{"self_pr": false, "employment": false, "skills": false, "certifications": false}',
         )
@@ -243,6 +248,11 @@ def get_resume_data(db: Session) -> Dict[str, Any]:
         'settings': {
             'allow_section_split': settings.allow_section_split,
             'font_scale': settings.font_scale,
+            'project_meta_column_width_px': settings.project_meta_column_width_px,
+            'project_tech_column_width_px': settings.project_tech_column_width_px,
+            'skill_category_column_width_em': settings.skill_category_column_width_em,
+            'skill_name_column_width_pct': settings.skill_name_column_width_pct,
+            'skill_experience_column_width_pct': settings.skill_experience_column_width_pct,
             'section_order': section_order,
             'section_page_breaks': parse_section_page_breaks(getattr(settings, "section_page_breaks", None)),
         },

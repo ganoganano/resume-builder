@@ -6,6 +6,11 @@ import { exportBackup, fetchSettings, importBackup, ResumeSettings, updateSettin
 const defaultSettings: ResumeSettings = {
   allow_section_split: false,
   font_scale: 1.0,
+  project_meta_column_width_px: 88,
+  project_tech_column_width_px: 150,
+  skill_category_column_width_em: 4.6,
+  skill_name_column_width_pct: 24,
+  skill_experience_column_width_pct: 12,
   section_order: ["self_pr", "employment", "skills", "certifications"],
   section_page_breaks: {
     self_pr: false,

@@ -89,6 +89,11 @@ def build_backup_payload(db: Session) -> dict:
             "id": 1,
             "allow_section_split": settings.allow_section_split if settings else False,
             "font_scale": settings.font_scale if settings else 1.0,
+            "project_meta_column_width_px": settings.project_meta_column_width_px if settings else 88,
+            "project_tech_column_width_px": settings.project_tech_column_width_px if settings else 150,
+            "skill_category_column_width_em": settings.skill_category_column_width_em if settings else 4.6,
+            "skill_name_column_width_pct": settings.skill_name_column_width_pct if settings else 24.0,
+            "skill_experience_column_width_pct": settings.skill_experience_column_width_pct if settings else 12.0,
             "section_order": json.loads(settings.section_order or '["self_pr","employment","skills","certifications"]')
             if settings else ["self_pr", "employment", "skills", "certifications"],
             "section_page_breaks": json.loads(
@@ -189,6 +194,11 @@ def restore_backup_payload(db: Session, payload: dict) -> None:
             id=1,
             allow_section_split=bool(settings.get("allow_section_split", False)),
             font_scale=float(settings.get("font_scale", 1.0)),
+            project_meta_column_width_px=int(settings.get("project_meta_column_width_px", 88)),
+            project_tech_column_width_px=int(settings.get("project_tech_column_width_px", 150)),
+            skill_category_column_width_em=float(settings.get("skill_category_column_width_em", 4.6)),
+            skill_name_column_width_pct=float(settings.get("skill_name_column_width_pct", 24.0)),
+            skill_experience_column_width_pct=float(settings.get("skill_experience_column_width_pct", 12.0)),
             section_order=json.dumps(
                 settings.get("section_order", ["self_pr", "employment", "skills", "certifications"]),
                 ensure_ascii=False,

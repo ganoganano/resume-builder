@@ -58,6 +58,11 @@ class ResumeSettings(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     allow_section_split: Mapped[bool] = mapped_column(default=False, nullable=False)
     font_scale: Mapped[float] = mapped_column(Float, default=1.0, nullable=False)
+    project_meta_column_width_px: Mapped[int] = mapped_column(Integer, default=88, nullable=False)
+    project_tech_column_width_px: Mapped[int] = mapped_column(Integer, default=150, nullable=False)
+    skill_category_column_width_em: Mapped[float] = mapped_column(Float, default=4.6, nullable=False)
+    skill_name_column_width_pct: Mapped[float] = mapped_column(Float, default=24.0, nullable=False)
+    skill_experience_column_width_pct: Mapped[float] = mapped_column(Float, default=12.0, nullable=False)
     section_order: Mapped[str] = mapped_column(
         Text,
         nullable=False,
